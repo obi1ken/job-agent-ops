@@ -17,9 +17,10 @@ ignores DISCORD_STATE_DIR.
 Time to complete: approximately 15 minutes per project.
 
 Current active projects:
-  costfeed.co   ->  start-costfeed.bat   ->  #costfeed-build   ->  costly-bot
-  mt5_ai_agent  ->  start-mt5.bat        ->  #mt5-agent        ->  mt5-bot
-  lobi-eco      ->  start-lobi-eco.bat   ->  6 channels + DM   ->  lobi-eco-bot
+  costfeed.co   ->  start-costfeed.bat       ->  #costfeed-build          ->  costly-bot
+  mt5_ai_agent  ->  start-mt5.bat            ->  #mt5-agent               ->  mt5-bot
+  lobi-eco      ->  start-lobi-eco.bat       ->  6 channels + DM          ->  lobi-eco-bot
+  job_agent_ops ->  start-job-agent-ops.bat  ->  #job-agent-ops-build     ->  job-agent-ops-bot
 
 
 ================================================================================
@@ -478,9 +479,28 @@ Architecture Notes
 
 --- settings.local.json ---
 
-  Should contain enabledPlugins pointing to the discord plugin and the
-  DISCORD_STATE_DIR environment variable. Keep this clean — do not add
-  .mcp.json files, .discord-plugin directories, or local marketplace artifacts.
+  The project-level .claude/settings.local.json must contain:
+
+    {
+      "enabledPlugins": {
+        "discord@claude-plugins-official": true
+      },
+      "env": {
+        "DISCORD_STATE_DIR": "C:\\Users\\obrya\\.claude\\channels\\discord-PROJECTNAME"
+      }
+    }
+
+  Replace discord-PROJECTNAME with the actual state directory for the project.
+
+  CORRUPTION WARNING: During debugging sessions, Claude Code may write
+  PowerShell permission entries or other unrelated keys into this file. If
+  settings.local.json is corrupted, the Discord plugin will fail to load even
+  though the bot token, access.json, and batch file are all correct. Symptoms:
+  bot starts, may go green, but push is disabled or plugin fails silently.
+
+  Fix: open .claude/settings.local.json, verify the structure above is intact,
+  and restore it if corrupted. Keep this file clean — do not add .mcp.json
+  files, .discord-plugin directories, or local marketplace artifacts.
 
 --- installed_plugins.json ---
 

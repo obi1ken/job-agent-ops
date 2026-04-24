@@ -55,20 +55,19 @@ If any file is missing: stop and flag to Charles before proceeding.
 
 ---
 
-## 4. Discord Bot — job-agent-ops-bot (Reference Only — Phase 2)
-
-The Discord bot is not yet configured. The details below are for reference when
-Phase 2 setup begins. Do not attempt bot operations until Phase 2 is active.
+## 4. Discord Bot — job-agent-ops-bot (LIVE — Phase 2 active from 2026-04-24)
 
 - Bot name: job-agent-ops-bot (2-way, CMD batch file)
 - Batch file: C:\Users\obrya\start-job-agent-ops.bat
 - Channel: #job-agent-ops-build (miclaud server)
+- Channel ID (incoming chat_id): 1497217102531264653
+- access.json channel ID: 1497197893260415146
 - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
 - Charles's Discord user ID: 1379195691624038440
 - Plugin: plugin:discord@claude-plugins-official (NOT server:discord)
 - Setup guide: Discord_Bot_Setup_Guide.txt (project root)
 
-When bot is live: all approvals, alerts, and notifications go via job-agent-ops-bot.
+All approvals, alerts, and notifications go via job-agent-ops-bot.
 
 ---
 

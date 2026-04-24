@@ -1,76 +1,65 @@
 # hot.md — Rolling Session Context
 # Max ~500 words. Updated when Charles says "update hot" or 5+ files written in a session.
 
-Last updated: 2026-04-24 (commit 3 — naming corrections)
+Last updated: 2026-04-24 (Phase 2 Step 1 complete — bot live, channel ID confirmed)
 
 ---
 
 ## What Just Shipped
 
-Phase 1 is FULLY COMPLETE. Three commits on feat/phase-1-foundation.
+Phase 1 COMPLETE (3 commits on feat/phase-1-foundation). See status.txt for full log.
 
-Commit 1 — Phase 1 foundation:
-- config/profile.yml, modes/_profile.md, portals.yml
-- data/applications.md, data/pipeline.md
-- WIKI.md, raw/, wiki/ (hot/index/log), wiki/pages/ (13 stubs)
-- .claude/skills/ (4), commands/ (5), agents/ (6), hooks/ (2), settings.json
-- CLAUDE.md — full 8-section rewrite
-- Discord_Bot_Setup_Guide.txt committed
-
-Commit 2 — Gmail and bot name corrections:
-- email-monitor-agent.md, wiki/pages/email-monitor.md: Hotmail → Gmail
-- OQ-3 marked resolved (Gmail confirmed for job applications)
-- OQ-4 resolved (Discord_Bot_Setup_Guide.txt now in project)
-
-Commit 3 — Naming corrections (current):
-- All career-bot → job-agent-ops-bot
-- All #career-ops-build → #job-agent-ops-build
-- Server reference → miclaud
-- Removed all "career-ops" from project-layer files (upstream untouched)
-- Gmail API confirmed throughout email_monitor references
+Phase 2 Step 1 COMPLETE (2026-04-24):
+- job-agent-ops-bot live on miclaud server, #job-agent-ops-build
+- Channel ID confirmed: 1497217102531264653
+- Discord_Bot_Setup_Guide.txt updated: settings.local.json corruption note added,
+  job_agent_ops added to active projects list
+- status.txt and wiki/hot.md updated to reflect Step 1 complete
 
 ---
 
 ## What Is In Progress
 
-Nothing. Phase 1 is done. Phase 2 ready to begin.
+Phase 2 Step 1 cleanup — commit pending on feat/phase-2-discord:
+- Update access.json: replace YOUR_CHANNEL_ID with 1497217102531264653
+- Update CLAUDE.md §4: remove "reference only" label, add confirmed channel ID
+- Update wiki/pages/discord-integration.md: status planned → current
 
 ---
 
 ## What Is Queued Next
 
-**Phase 2 — new session required.**
+**Phase 2 Step 2 — build extensions/ folder (after cleanup commit).**
 
-Phase 2 sequence:
-1. Discord bot setup (job-agent-ops-bot via plugin:discord@claude-plugins-official)
-   - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
-   - Batch file: C:\Users\obrya\start-job-agent-ops.bat
-   - Channel: #job-agent-ops-build on miclaud server
-   - Charles's Discord user ID: 1379195691624038440
-   - Discord_Bot_Setup_Guide.txt is in project root — refer to it for full setup procedure
-2. Update CLAUDE.md Discord section from "reference only" to confirmed bot details
-3. Build extensions/ folder:
-   - extensions/notifications/ (Discord client, event types, embed templates)
-   - extensions/email_monitor/ (Gmail API, classifier, tracker updater)
-   - extensions/quota_manager/ (5hr rolling window, batch throttle, priority queue)
-   - extensions/interview_prep/ (auto-trigger, prep pack generator, Discord delivery)
-   - extensions/cv_diff/ (master vs tailored diff, EDMS detection for Track D)
-   - extensions/deadline_manager/ (follow-up scheduler, interview countdown, state machine)
-   - extensions/job_discovery/ (Adzuna API + SerpAPI Google Jobs adapters)
-   - orchestrator.py (ties all extensions)
-   - requirements.txt
-   - .env (gitignored)
+Build order:
+1. extensions/notifications/ (Discord client, event types, embed templates) — dependency for all others
+2. extensions/email_monitor/ (Gmail API, classifier, tracker updater)
+3. extensions/job_discovery/ (Adzuna API + SerpAPI Google Jobs adapters — needs API keys)
+4. extensions/cv_diff/ (diff logger + EDMS detection for Track D)
+5. extensions/quota_manager/ (5hr rolling window, batch throttle, priority queue)
+6. extensions/interview_prep/ (auto-trigger, prep pack generator, Discord delivery)
+7. extensions/deadline_manager/ (follow-up scheduler, interview countdown, state machine)
+8. orchestrator.py + requirements.txt + .env (gitignored)
+
+Bot details (confirmed):
+- Bot: job-agent-ops-bot, channel: #job-agent-ops-build, server: miclaud
+- Channel ID: 1497217102531264653
+- State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
+- Batch file: C:\Users\obrya\start-job-agent-ops.bat
+- Charles's Discord user ID: 1379195691624038440
+
+Open decisions still live: OQ-1 (LinkedIn URL), OQ-2 (salary), OQ-5/OQ-6 (API keys), OQ-7 (Track C location).
 
 ---
 
 ## Open Decisions Carried Forward
 
-D2: CLAUDE.md listed as System Layer in DATA_CONTRACT.md but replaced by Item C.
+D2: CLAUDE.md listed as System Layer in DATA_CONTRACT.md but replaced by Charles-specific content.
     Risk: future update-system.mjs apply may overwrite. Logged in risks-incidents.md.
 
 D3: .claude/skills/* same tension as D2. Logged.
 
 D4: applications.md schema differs from merge-tracker.mjs expectations.
-    merge-tracker.mjs not modified (upstream). Will be superseded by extensions.
+    Intentional — will be superseded by extensions/.
 
 D7: LinkedIn URL still placeholder. Update when LinkedIn profile is ready.

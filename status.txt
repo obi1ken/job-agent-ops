@@ -63,17 +63,17 @@ D4    applications.md schema differs from merge-tracker.mjs. Intentional. Will b
       superseded by extensions/. Logged in risks-incidents.md as R3.
 
 ==============================================================
-3. PHASE 2 — READY TO BEGIN (new session)
+3. PHASE 2 — IN PROGRESS
 ==============================================================
 
-STEP 1 — Discord bot setup
-  - Create #job-agent-ops-build channel on miclaud server
-  - Create bot application in Discord Developer Portal (name: job-agent-ops-bot)
-  - Enable all 3 Privileged Gateway Intents
-  - Create state dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
-  - Create .env and access.json in state dir (templates in discord-integration.md)
-  - Create batch file: C:\Users\obrya\start-job-agent-ops.bat
-  - Run batch file → confirm bot goes green + responds to test message
+STEP 1 — Discord bot setup — COMPLETE (2026-04-24)
+  - Bot live: job-agent-ops-bot on miclaud server, #job-agent-ops-build
+  - Channel ID confirmed: 1497217102531264653
+  - Batch file: C:\Users\obrya\start-job-agent-ops.bat
+  - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
+  - settings.local.json structure documented in Discord_Bot_Setup_Guide.txt
+  STILL TODO:
+  - Update access.json: replace YOUR_CHANNEL_ID with 1497217102531264653
   - Update CLAUDE.md section 4: remove "reference only" label, add confirmed channel ID
   - Update wiki/pages/discord-integration.md status: planned → current
   - Commit on feat/phase-2-discord

@@ -1,5 +1,5 @@
 ---
-status: planned
+status: current
 last_updated: 2026-04-24
 last_verified: 2026-04-24
 sources:
@@ -9,7 +9,7 @@ synthesis: Discord job-agent-ops-bot setup parameters and step-by-step procedure
 
 # Discord Integration
 
-**STATUS: PLANNED — Phase 2 only. Not yet configured.**
+**STATUS: CURRENT — Bot live as of 2026-04-24.**
 
 Setup guide: `Discord_Bot_Setup_Guide.txt` (project root) — full procedure with troubleshooting.
 
@@ -20,6 +20,8 @@ Setup guide: `Discord_Bot_Setup_Guide.txt` (project root) — full procedure wit
 | Bot name | job-agent-ops-bot |
 | Channel | #job-agent-ops-build |
 | Server | miclaud |
+| Channel ID (incoming chat_id) | 1497217102531264653 |
+| access.json channel ID | 1497197893260415146 |
 | Charles's Discord user ID | 1379195691624038440 |
 | State dir | `C:\Users\obrya\.claude\channels\discord-job-agent-ops\` |
 | Batch file | `C:\Users\obrya\start-job-agent-ops.bat` |
@@ -82,9 +84,9 @@ claude --channels plugin:discord@claude-plugins-official
 
 ## After bot is live
 
-- [ ] Update this page status: planned → current
-- [ ] Update CLAUDE.md section 4: remove "reference only" note, add confirmed channel ID
-- [ ] Commit on feat/phase-2-discord branch
+- [x] Update this page status: planned → current (2026-04-24)
+- [x] Update CLAUDE.md section 4: remove "reference only" note, add confirmed channel IDs (2026-04-24)
+- [x] Commit on feat/phase-2-discord branch (2026-04-24)
 
 ## Event types (Phase 2 extensions/notifications/)
 
