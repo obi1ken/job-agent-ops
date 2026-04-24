@@ -1,0 +1,394 @@
+# Portal Scanner Configuration — Charles Asiegbu
+# Generated: 2026-04-24
+# UK-curated for 4-track search (A=Engineering, B=Product, C=Rail/Civils, D=DocControl)
+#
+# Strategy:
+#   1. Playwright → careers_url of each tracked company (real-time)
+#   2. Greenhouse API → structured JSON (fast, Greenhouse-only)
+#   3. WebSearch with site: filters (broad discovery)
+#
+# Profile portals (CV stored):
+#   LinkedIn → Track B | Indeed → Track B | Reed → Track D
+#   Totaljobs → Track C | CWJobs → Track A | RailwayPeople → Track C
+#
+# Search-only (no profile stored):
+#   Adzuna API (100+ UK boards) | Google Jobs via SerpAPI
+
+# -- Title filter --
+# At least 1 positive must match AND 0 negatives must match.
+
+title_filter:
+  positive:
+    # Track A — Engineering / AI
+    - "AI Agent"
+    - "AI Engineer"
+    - "AI Infrastructure"
+    - "Autonomous"
+    - "LLM"
+    - "MLOps"
+    - "LLMOps"
+    - "Agentic"
+    - "GenAI"
+    - "Generative AI"
+    - "Founding Engineer"
+    - "Platform Engineer"
+    - "Solutions Architect"
+    - "Solutions Engineer"
+    - "ML Engineer"
+    # Track B — Product / Leadership
+    - "Product Manager"
+    - "Technical PM"
+    - "Head of AI"
+    - "AI Product"
+    - "AI Delivery"
+    - "Transformation Lead"
+    # Track C — Rail / Civils Digital
+    - "Digital Transformation"
+    - "BIM"
+    - "Rail"
+    - "Railway"
+    - "Infrastructure"
+    - "Civils"
+    - "Safety Technology"
+    - "AI Implementation"
+    - "Technology Consultant"
+    # Track D — Document Control
+    - "Document Controller"
+    - "Document Control"
+    - "Information Manager"
+    - "Information Management"
+    - "Records Manager"
+    - "BIM Information"
+    - "EDMS"
+  negative:
+    - "Junior"
+    - "Graduate"
+    - "Intern"
+    - "Apprentice"
+    - "iOS"
+    - "Android"
+    - "PHP"
+    - "Ruby"
+    - "Embedded"
+    - "Firmware"
+    - "FPGA"
+    - "Blockchain"
+    - "Web3"
+    - "Crypto"
+    - "COBOL"
+    - "Mainframe"
+  seniority_boost:
+    - "Senior"
+    - "Lead"
+    - "Principal"
+    - "Head"
+    - "Director"
+    - "Staff"
+
+# -- Search queries --
+# UK portals — profile stored (Track noted per portal)
+
+search_queries:
+
+  # -- CWJobs (Track A — Engineering/AI) --
+  - name: CWJobs — AI Agent Engineer
+    query: 'site:cwjobs.co.uk "AI Agent" OR "AI Engineer" OR "MLOps" OR "LLMOps" OR "Autonomous" UK'
+    enabled: true
+
+  - name: CWJobs — Founding Engineer
+    query: 'site:cwjobs.co.uk "Founding Engineer" OR "AI Infrastructure" OR "Agentic" UK'
+    enabled: true
+
+  # -- LinkedIn (Track B — Product/Leadership) --
+  - name: LinkedIn — AI Product Manager UK
+    query: 'site:linkedin.com/jobs "AI Product Manager" OR "Head of AI" OR "Technical PM" UK'
+    enabled: true
+
+  - name: LinkedIn — AI Delivery Lead UK
+    query: 'site:linkedin.com/jobs "AI Delivery" OR "Transformation Lead" OR "Solutions Engineer" AI UK'
+    enabled: true
+
+  # -- Indeed UK (all tracks — auto-detect) --
+  - name: Indeed UK — Track A Engineering
+    query: 'site:uk.indeed.com "AI Engineer" OR "MLOps" OR "AI Agent" OR "Founding Engineer"'
+    enabled: true
+
+  - name: Indeed UK — Track B Product
+    query: 'site:uk.indeed.com "AI Product Manager" OR "Head of AI" OR "Technical Product Manager"'
+    enabled: true
+
+  - name: Indeed UK — Track C Rail Digital
+    query: 'site:uk.indeed.com "Digital Transformation" rail OR civils OR infrastructure "Project Manager" OR "Consultant"'
+    enabled: true
+
+  - name: Indeed UK — Track D Document Control
+    query: 'site:uk.indeed.com "Document Controller" OR "Information Manager" rail OR civils OR construction'
+    enabled: true
+
+  # -- Reed (Track D — Document Control) --
+  - name: Reed — Document Controller rail/civils
+    query: 'site:reed.co.uk "Document Controller" OR "Information Manager" OR "EDMS" rail OR civils OR construction OR infrastructure'
+    enabled: true
+
+  - name: Reed — BIM Information Manager
+    query: 'site:reed.co.uk "BIM Information Manager" OR "BIM Manager" OR "Digital Information Manager"'
+    enabled: true
+
+  # -- Totaljobs (Track C — Rail/Civils Digital) --
+  - name: Totaljobs — Rail Digital Transformation
+    query: 'site:totaljobs.com "Digital Transformation" rail OR infrastructure OR civils "Project Manager" OR "Consultant" OR "BIM"'
+    enabled: true
+
+  - name: Totaljobs — AI Implementation rail/civils
+    query: 'site:totaljobs.com "AI Implementation" OR "Safety Technology" OR "Technology Consultant" rail OR infrastructure'
+    enabled: true
+
+  # -- RailwayPeople (Track C — specialist rail) --
+  - name: RailwayPeople — Digital / Technology roles
+    query: 'site:railwaypeople.com "Digital" OR "Technology" OR "BIM" OR "AI" OR "Data" "Manager" OR "Consultant" OR "Engineer"'
+    enabled: true
+
+  - name: RailwayPeople — COSS / Safety / Operations
+    query: 'site:railwaypeople.com "COSS" OR "Protection Controller" OR "Site Safety" OR "Possession" OR "Safety Manager"'
+    enabled: true
+
+  # -- Adzuna (search-only, no profile — API key required) --
+  # Configure ADZUNA_APP_ID and ADZUNA_API_KEY in .env
+  - name: Adzuna — All tracks UK
+    query: 'AI Engineer OR Document Controller OR Digital Transformation OR "Product Manager" UK full-time'
+    enabled: false   # enable once Adzuna API keys configured in .env
+    notes: "Aggregates 100+ UK boards. Filter: UK, full-time, salary > £35,000."
+
+  # -- Google Jobs via SerpAPI (search-only, no profile) --
+  # Configure SERPAPI_KEY in .env
+  - name: SerpAPI Google Jobs — Track A Engineering
+    query: '"AI Agent Engineer" OR "Founding Engineer" OR "AI Infrastructure" UK'
+    enabled: false   # enable once SERPAPI_KEY configured in .env
+
+  - name: SerpAPI Google Jobs — Track C Rail Digital
+    query: '"Digital Railway" OR "Rail Technology" OR "BIM Digital" "Project Manager" OR "Consultant" UK'
+    enabled: false
+
+  # -- Greenhouse / Ashby / Lever — direct ATS searches --
+  - name: Greenhouse — AI Engineer UK/EU
+    query: 'site:boards.greenhouse.io OR site:job-boards.greenhouse.io "AI Engineer" OR "ML Engineer" OR "LLM" UK OR London OR Remote'
+    enabled: true
+
+  - name: Ashby — AI / Founding Engineer
+    query: 'site:jobs.ashbyhq.com "AI Engineer" OR "Founding Engineer" OR "Agentic" OR "LLM" remote OR London'
+    enabled: true
+
+  - name: Lever — AI / Solutions roles
+    query: 'site:jobs.lever.co "AI Engineer" OR "Solutions Architect" OR "Forward Deployed" remote OR London'
+    enabled: true
+
+# -- Tracked companies --
+# UK and EU AI companies relevant to Track A/B.
+# Rail/civils companies for Track C via websearch (no ATS APIs).
+
+tracked_companies:
+
+  # -- UK AI Labs --
+
+  - name: PolyAI
+    careers_url: https://job-boards.eu.greenhouse.io/polyai
+    api: https://boards-api.greenhouse.io/v1/boards/polyai/jobs
+    notes: "London UK. Voice AI for enterprise contact centers."
+    enabled: true
+
+  - name: Wayve
+    careers_url: https://job-boards.greenhouse.io/wayve
+    api: https://boards-api.greenhouse.io/v1/boards/wayve/jobs
+    notes: "London UK. Embodied AI for autonomous vehicles."
+    enabled: true
+
+  - name: Isomorphic Labs
+    careers_url: https://job-boards.greenhouse.io/isomorphiclabs
+    api: https://boards-api.greenhouse.io/v1/boards/isomorphiclabs/jobs
+    notes: "London/Lausanne. DeepMind spin-out, drug discovery AI."
+    enabled: true
+
+  - name: PhysicsX
+    careers_url: https://job-boards.greenhouse.io/physicsx
+    api: https://boards-api.greenhouse.io/v1/boards/physicsx/jobs
+    notes: "London UK. Physics-informed ML for engineering."
+    enabled: true
+
+  - name: Stability AI
+    careers_url: https://job-boards.greenhouse.io/stabilityai
+    api: https://boards-api.greenhouse.io/v1/boards/stabilityai/jobs
+    notes: "London/SF. Generative AI image/video research."
+    enabled: true
+
+  - name: Synthesia
+    careers_url: https://jobs.ashbyhq.com/synthesia
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/synthesia'
+    notes: "London UK. AI video generation for enterprise."
+    enabled: true
+
+  - name: Faculty
+    careers_url: https://jobs.ashbyhq.com/faculty
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/faculty'
+    notes: "London UK. Applied AI consultancy."
+    enabled: true
+
+  - name: Speechmatics
+    careers_url: https://job-boards.greenhouse.io/speechmatics
+    api: https://boards-api.greenhouse.io/v1/boards/speechmatics/jobs
+    notes: "Cambridge UK. Speech recognition platform."
+    enabled: true
+
+  - name: Causaly
+    careers_url: https://jobs.ashbyhq.com/causaly
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/causaly'
+    notes: "London/Athens. Biomedical knowledge graph + AI."
+    enabled: true
+
+  # -- Major AI Labs (global, UK-friendly) --
+
+  - name: Anthropic
+    careers_url: https://job-boards.greenhouse.io/anthropic
+    api: https://boards-api.greenhouse.io/v1/boards/anthropic/jobs
+    enabled: true
+
+  - name: DeepL
+    careers_url: https://jobs.ashbyhq.com/DeepL
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/DeepL'
+    notes: "Cologne DE. Translation AI. Strong EU/remote hiring."
+    enabled: true
+
+  - name: Helsing
+    careers_url: https://job-boards.greenhouse.io/helsing
+    api: https://boards-api.greenhouse.io/v1/boards/helsing/jobs
+    notes: "Munich/Berlin/London. Defence AI. ML & FDE roles."
+    enabled: true
+
+  - name: Mistral AI
+    careers_url: https://jobs.lever.co/mistral
+    notes: "Paris. European AI lab. Remote-friendly."
+    enabled: true
+
+  - name: Hugging Face
+    careers_url: https://apply.workable.com/huggingface/
+    scan_method: websearch
+    scan_query: 'site:apply.workable.com/huggingface'
+    notes: "Paris/NYC/Remote. ML hub."
+    enabled: true
+
+  - name: Cohere
+    careers_url: https://jobs.ashbyhq.com/cohere
+    notes: "AI/LLM provider. Remote-friendly."
+    enabled: true
+
+  - name: ElevenLabs
+    careers_url: https://jobs.ashbyhq.com/elevenlabs
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/elevenlabs'
+    notes: "Voice AI TTS leader."
+    enabled: true
+
+  - name: Palantir
+    careers_url: https://jobs.lever.co/palantir
+    notes: "FDE roles. London office active."
+    enabled: true
+
+  # -- AI-native platforms --
+
+  - name: Retool
+    careers_url: https://retool.com/careers
+    scan_method: websearch
+    scan_query: 'site:retool.com/careers "Deployed" OR "AI" OR "Solutions"'
+    notes: "London. Popularized Deployed Engineer role."
+    enabled: true
+
+  - name: Glean
+    careers_url: https://job-boards.greenhouse.io/gleanwork
+    api: https://boards-api.greenhouse.io/v1/boards/gleanwork/jobs
+    notes: "Enterprise AI search."
+    enabled: true
+
+  - name: Weights & Biases
+    careers_url: https://jobs.lever.co/wandb
+    notes: "MLOps platform. Remote-friendly."
+    enabled: true
+
+  - name: LangChain
+    careers_url: https://jobs.ashbyhq.com/langchain
+    notes: "LangChain/LangSmith. Remote."
+    enabled: true
+
+  - name: Perplexity
+    careers_url: https://jobs.ashbyhq.com/perplexity
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/perplexity'
+    notes: "AI-native search. Remote-friendly."
+    enabled: true
+
+  - name: Supabase
+    careers_url: https://jobs.ashbyhq.com/supabase
+    scan_method: websearch
+    scan_query: 'site:jobs.ashbyhq.com/supabase'
+    notes: "Open-source Firebase alternative. Remote-first."
+    enabled: true
+
+  # -- Rail & Civils companies (Track C — websearch only) --
+
+  - name: Network Rail
+    careers_url: https://www.networkrail.co.uk/careers
+    scan_method: websearch
+    scan_query: 'site:networkrail.co.uk/careers "Digital" OR "Technology" OR "BIM" OR "Data" OR "AI"'
+    notes: "UK rail infrastructure owner. Track C primary target."
+    enabled: true
+
+  - name: HS2
+    careers_url: https://www.hs2.org.uk/jobs
+    scan_method: websearch
+    scan_query: 'site:hs2.org.uk/jobs "Digital" OR "BIM" OR "Technology" OR "Information"'
+    notes: "High Speed 2. Major UK rail programme. Track C."
+    enabled: true
+
+  - name: AtkinsRéalis
+    careers_url: https://careers.atkinsrealis.com
+    scan_method: websearch
+    scan_query: 'site:careers.atkinsrealis.com "Digital" OR "BIM" OR "Rail" OR "AI" UK'
+    notes: "Global engineering consultancy. Rail/civils digital. Track C."
+    enabled: true
+
+  - name: Mott MacDonald
+    careers_url: https://www.mottmac.com/careers
+    scan_method: websearch
+    scan_query: 'site:mottmac.com/careers "Digital" OR "BIM" OR "Rail" OR "Technology" UK'
+    notes: "Engineering and management consultancy. Track C."
+    enabled: true
+
+  - name: Arup
+    careers_url: https://www.arup.com/careers
+    scan_method: websearch
+    scan_query: 'site:arup.com/careers "Digital" OR "BIM" OR "Rail" OR "AI" UK'
+    notes: "Global engineering firm. Heavy rail/civils digital. Track C."
+    enabled: true
+
+  - name: Balfour Beatty
+    careers_url: https://www.balfourbeatty.com/careers
+    scan_method: websearch
+    scan_query: 'site:balfourbeatty.com/careers "Digital" OR "BIM" OR "Technology" OR "Information Manager"'
+    notes: "UK infrastructure. Rail/civils. Tracks C and D."
+    enabled: true
+
+  - name: Mace
+    careers_url: https://www.macegroup.com/careers
+    scan_method: websearch
+    scan_query: 'site:macegroup.com/careers "Digital" OR "BIM" OR "Document Control" OR "Information"'
+    notes: "Construction/infrastructure. Tracks C and D."
+    enabled: true
+
+  - name: Bechtel
+    careers_url: https://www.bechtel.com/careers
+    scan_method: websearch
+    scan_query: 'site:bechtel.com/careers "Digital" OR "BIM" OR "Document Control" UK'
+    notes: "Global infrastructure. UK rail projects. Tracks C and D."
+    enabled: true

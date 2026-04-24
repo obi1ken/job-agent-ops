@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(cat:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PreToolUse": [],
+    "PostToolUse": []
+  }
+}

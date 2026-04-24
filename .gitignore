@@ -1,7 +1,7 @@
 # Personal data (user fills these)
-cv.md
-data/applications.md
-data/pipeline.md
+# NOTE: This is a personal fork — user-layer files ARE committed here.
+# cv.md and data/ files intentionally tracked.
+# data/scan-history.tsv excluded (auto-generated, large)
 data/scan-history.tsv
 reports/*.md
 !reports/.gitkeep
@@ -17,9 +17,8 @@ jds/*
 !jds/.gitkeep
 
 # User config and customization (never auto-updated)
-config/profile.yml
-portals.yml
-modes/_profile.md
+# NOTE: Personal fork — these ARE committed intentionally.
+# config/profile.yml, portals.yml, modes/_profile.md tracked here.
 .update-dismissed
 .update-lock
 
