@@ -1,424 +1,106 @@
-# Job Agent Ops — Phase 1 Handoff State
-# Written: 2026-04-24
-# Session status: PAUSED before any file writes
+# Job Agent Ops — Status
+# Updated: 2026-04-24
+# Phase 1: COMPLETE (3 commits on feat/phase-1-foundation)
 
 ==============================================================
-1. COMPLETED THIS SESSION
+1. PHASE 1 — COMPLETED
 ==============================================================
 
-READING / CONTEXT ABSORPTION
-- Read cv.md (347 lines). Understood 4 profile variants.
-- Read article-digest.md (507 lines). Internalised tailoring contract,
-  4 tracks, per-track lead/de-emphasise rules, scoring thresholds,
-  portal mapping, never-include list, response-classification taxonomy.
-- Read instructions.md TWICE:
-    a) Original 417-line Phase 1 spec (items 1-8 + A + B + C + D,
-       Karpathy 4 principles, Phase 2 sequence).
-    b) Current 34-line answers file that replaced it on disk.
-       It contains Charles's answers to my 4 open questions plus
-       the line "Proceed with Phase 1 execution."
-- Read config/profile.example.yml (schema for Item 1).
-- Read modes/_profile.template.md (schema for Item 2).
-- Read templates/portals.example.yml (897 lines — upstream is
-  US+Spanish+DACH-heavy and needs UK curation for Item 3).
-- Read modes/_shared.md (upstream scoring system and archetypes
-  which must remain intact per rule "upstream modes/ preserved").
-- Read DATA_CONTRACT.md (surfaced 2 tensions — see Section 4).
+All items shipped across 3 commits on feat/phase-1-foundation.
 
-CONVERSATION OUTCOMES
-- Confirmed 4 CV tracks, roles, portals, section headers.
-- Confirmed two-phase plan: Phase 1 this session, Phase 2 later
-  session. Phase 2 = Discord bot + extensions/ folder (+ subdirs
-  notifications, email_monitor, quota_manager, interview_prep,
-  cv_diff, deadline_manager, job_discovery) + orchestrator.py.
-- Proposed 13-page wiki skeleton. CHARLES APPROVED as-is.
-- Received Charles's answers to 4 open questions:
-    Q1 Identity: Charles Asiegbu, Reading UK. GitHub: obi1ken.
-       Windows user folder "obrya" is MS-account-derived, not a name.
-    Q2 Archetypes: synthesise Trades / Non-Software Engineering /
-       Operations from scratch aligned with Tracks C & D.
-       Do NOT fetch andrew-shwetzer/career-ops-plugin.
-    Q3 Phase 2 extension mapping:
-         gap item 9  (EDMS detection)     -> extensions/cv_diff/
-         gap item 10 (cover letter/track) -> extensions/notifications/cover_letter_templates/
-         gap item 13 (Adzuna + SerpAPI)   -> NEW extensions/job_discovery/
-    Q4 raw/ seeding: cv.md + article-digest.md + instructions.md.
-
-PARTIAL EXECUTION ATTEMPT
-- Issued one mkdir command to create raw/, wiki/, wiki/pages/,
-  .claude/{commands,agents,hooks}/. DENIED with reason
-  "premature execution" — permission gate treats auto-mode approval
-  in instructions.md as planning-intent, not a permission grant.
-- No files written. No directories created. Disk state unchanged
-  from session start (apart from the existing article-digest.md
-  and cv.md Charles placed there himself).
-
-==============================================================
-2. STILL PENDING IN PHASE 1
-==============================================================
-
-ONBOARDING FILES (Items 1-5 + 6)
-- [ ] Item 1  config/profile.yml
-      From config/profile.example.yml.
-      Populate: full_name "Charles Asiegbu"; email obryann@hotmail.com;
-      phone 07932028706; location "Reading, UK"; github "obi1ken";
-      linkedin placeholder TBD; 4-track archetypes; thresholds
-      (3.5 default / 3.0 Track D / 4.0 priority / 4.5 urgent);
-      portal-to-profile mapping per article-digest.
-- [ ] Item 2  modes/_profile.md
-      From modes/_profile.template.md. Canonical home for:
-        * 4 tracks (A/B/C/D) with roles, portals, section headers,
-          lead-with bullets, de-emphasise bullets, keywords.
-        * Per-track proof points (from article-digest "Proof Points
-          by Track" section).
-        * Cover letter principles per track.
-        * Never-include rules.
-        * Portal-to-profile mapping.
-        * Location policy (Reading UK, will commute / remote).
-        * 4-variant auto-track selection logic (Item 7).
-        * Per-track threshold overrides (Item 8).
-        * NEW archetypes: Trades, Non-Software Engineering,
-          Operations (Item D synthesis).
-        * EDMS platform detection rule for Track D
-          (Aconex / Asite / Procore / Viewpoint / Dalux).
-- [ ] Item 3  portals.yml
-      From templates/portals.example.yml. Heavy curation:
-        * title_filter.positive rewritten for 4 tracks
-          (AI agent keywords + rail/COSS keywords + doc-control
-          keywords).
-        * title_filter.negative keeps Junior/Intern/embedded but
-          drop .NET/Java/iOS blocks that aren't relevant to
-          Charles's search.
-        * search_queries: add LinkedIn UK, Indeed UK, Reed,
-          Totaljobs, CWJobs, RailwayPeople. Note Adzuna (API key)
-          and SerpAPI Google Jobs (for scan-only, no profile).
-        * tracked_companies: KEEP Greenhouse/Ashby/Lever-based
-          UK/EU AI labs (Wayve, Isomorphic Labs, PhysicsX,
-          Stability AI, Synthesia, Faculty, Causaly, Speechmatics,
-          PolyAI, DeepL, Black Forest Labs, Helsing, Celonis,
-          Contentful, Anthropic, OpenAI etc.).
-          COMMENT OUT US-only aggregators, Spanish-only boards
-          (Manfred ES, Tecnoempleo, JobFluent, Welcome to the
-          Jungle ES, Clarity AI, Travelperk, Amplemarket, Factorial,
-          Pigment-Paris, Qonto-SMB).
-          ADD rail/civils companies (Network Rail, HS2, AtkinsRéalis,
-          Mott MacDonald, Arup, Bechtel, Mace, Balfour Beatty)
-          with scan_method: websearch since they don't expose
-          Greenhouse APIs.
-- [ ] Item 4  data/applications.md
-      Headers per instructions: Date | Company | Role | Track |
-      Score | Portal | Status | CV Version | Notes.
-      NOTE: This schema DIFFERS from upstream merge-tracker.mjs
-      which expects "# | Date | Company | Role | Status | Score |
-      PDF | Report | Notes". This mismatch is known; see Section 4.
-- [ ] Item 5  data/pipeline.md
-      Empty table with header: # | Added | URL | Source |
-      Track Hint | Notes.
-- [X] Item 6  cv.md polish — NO CHANGE required per instructions.
-
-ITEMS 7-8 (fold into Item 2)
-- [ ] Item 7  4-variant auto-track selection — encoded in _profile.md.
-- [ ] Item 8  Per-track threshold overrides — encoded in _profile.md.
-
-ITEM A — WIKI BOOTSTRAP (Karpathy pattern)
-- [ ] Create directories: raw/, wiki/, wiki/pages/.
-- [ ] Seed raw/ with copies of cv.md, article-digest.md,
-      instructions.md (the CURRENT 34-line answers file — authoritative
-      on disk; original 417-line spec no longer exists but is
-      preserved in wiki/pages/system-overview.md as synthesis).
-- [ ] WIKI.md with schema rules:
-        * raw/ authoritative over wiki/
-        * Staleness by source-mtime only, no time backstop
-        * Inline contradiction block + log.md entry; status stays
-          current; add contradiction: <ref> frontmatter field
-        * Log granularity: ingests, lint runs, structural changes,
-          contradictions only. NOT typo fixes.
-        * Page frontmatter schema: status / last_updated /
-          last_verified / sources: [] / synthesis:
-- [ ] wiki/hot.md — rolling <=500-word session context. At boot:
-      "Phase 1 foundation just completed. Next: commit + Phase 2
-      in new session (Discord career-bot + extensions/)."
-- [ ] wiki/index.md — 1-line summary per page, grouped by category.
-- [ ] wiki/log.md — append-only, first entry:
-      "2026-04-24: Phase 1 bootstrap — wiki scaffolded with 13 stubs."
-- [ ] wiki/pages/ — 13 stub files (5-line stubs only, lazy expand):
-        1.  system-overview.md       status:current
-        2.  four-tracks.md           status:current
-        3.  cv-master.md             status:current
-        4.  scoring-logic.md         status:current
-        5.  portals-and-mapping.md   status:current
-        6.  cover-letter-rules.md    status:current
-        7.  interview-prep-workflow.md status:current
-        8.  application-pipeline.md  status:current
-        9.  discord-integration.md   status:planned
-        10. email-monitor.md         status:planned
-        11. glossary.md              status:current
-        12. open-questions.md        status:current
-        13. risks-incidents.md      status:current
-
-ITEM B — .claude/ STRUCTURE (18 files)
-- [ ] .claude/skills/cv-generation.md
-- [ ] .claude/skills/job-scoring.md
-- [ ] .claude/skills/cover-letter.md
-- [ ] .claude/skills/interview-prep.md
-- [ ] .claude/commands/score-job.md
-- [ ] .claude/commands/tailor-cv.md
-- [ ] .claude/commands/cover-letter.md
-- [ ] .claude/commands/interview-prep.md
-- [ ] .claude/commands/lint-wiki.md
-- [ ] .claude/agents/cv-tailoring-agent.md
-- [ ] .claude/agents/job-search-agent.md
-- [ ] .claude/agents/scoring-agent.md
-- [ ] .claude/agents/cover-letter-agent.md
-- [ ] .claude/agents/interview-prep-agent.md
-- [ ] .claude/agents/email-monitor-agent.md
-- [ ] .claude/hooks/pre-apply.md    (Windows rule: .md only, NO .sh)
-- [ ] .claude/hooks/post-session.md (Windows rule: .md only, NO .sh)
-- [ ] .claude/settings.json         (minimal permissions + hook refs)
-
-ITEM C — PROJECT CLAUDE.md
-- [ ] Replace entirely with 8-section structure:
-        1. Project identity (Job Agent Ops, Charles Asiegbu,
-           Reading UK, fork of santifer/career-ops).
-        2. Karpathy 4 principles (Think Before Coding, Simplicity
-           First, Surgical Changes, Goal-Driven Execution).
-        3. Session start read order: wiki/hot.md, wiki/index.md,
-           cv.md, article-digest.md, config/profile.yml.
-        4. Discord bot reference-only (Phase 2 setup).
-        5. Human-in-loop rule (non-negotiable).
-        6. 4-track system summary.
-        7. Extension architecture (extensions/ only; never upstream).
-        8. Upstream preservation rule.
-
-ITEM D — INDUSTRY ARCHETYPES (folds into Item 2)
-- [ ] Synthesise 3 new archetypes in modes/_profile.md:
-        Trades archetype            (Track C rail/civils roles)
-        Non-Software Engineering    (Track C/D)
-        Operations archetype        (Track D doc control)
-      Keep existing LLMOps/Agentic/PM/SA/FDE/Transformation
-      archetypes intact in upstream _shared.md (do NOT modify).
-
-==============================================================
-3. CURRENT FILE STATE
-==============================================================
-
-EXISTS (user-authored or upstream)
-  cv.md                                    (user — 4 profile variants)
-  article-digest.md                        (user — tailoring guide)
-  instructions.md                          (user — 34-line answers file;
-                                            NOTE original 417-line Phase 1
-                                            spec has been overwritten)
-  CLAUDE.md                                (upstream — to be replaced by Item C)
-  DATA_CONTRACT.md                         (upstream)
-  config/profile.example.yml               (upstream template)
-  modes/_profile.template.md               (upstream template)
-  modes/_shared.md                         (upstream — DO NOT MODIFY)
-  modes/ (all other files)                 (upstream — DO NOT MODIFY)
-  templates/portals.example.yml            (upstream template)
-  templates/cv-template.{html,tex}         (upstream)
-  templates/states.yml                     (upstream)
-  .claude/skills/                          (upstream directory, has existing
-                                            career-ops skill — Charles's 4
-                                            new skill files will be added
-                                            alongside, not replacing)
-  .gemini/commands/                        (upstream)
-  .opencode/commands/                      (upstream)
-  All *.mjs scripts                        (upstream — DO NOT MODIFY)
-  dashboard/                               (upstream)
-  Translation modes/{de,fr,ja,pt,ru}/      (upstream)
-
-MISSING — MUST CREATE
-  config/profile.yml
-  modes/_profile.md
-  portals.yml
-  data/applications.md
-  data/pipeline.md
-  raw/                                     (dir)
-  raw/cv.md                                (copy)
-  raw/article-digest.md                    (copy)
-  raw/instructions.md                      (copy of current 34-line file)
-  wiki/                                    (dir)
-  wiki/hot.md
-  wiki/index.md
-  wiki/log.md
-  wiki/pages/                              (dir)
-  wiki/pages/*.md                          (13 stub files)
-  WIKI.md
-  .claude/commands/                        (dir)
-  .claude/commands/*.md                    (5 files)
-  .claude/agents/                          (dir)
-  .claude/agents/*.md                      (6 files)
-  .claude/hooks/                           (dir)
-  .claude/hooks/*.md                       (2 files, .md only)
-  .claude/skills/*.md                      (4 new files next to existing)
+COMMIT 1 — Phase 1 foundation
+  config/profile.yml         — Charles's profile, 4 tracks, thresholds, portal mapping
+  modes/_profile.md          — canonical 4-track rules, proof points, archetypes
+  portals.yml                — UK-curated (6 portals + Adzuna/SerpAPI + 20 companies)
+  data/applications.md       — tracker initialised, correct headers
+  data/pipeline.md           — URL inbox initialised
+  WIKI.md                    — schema and governance rules
+  raw/                       — seeded (cv.md, article-digest.md, instructions.md)
+  wiki/hot.md, index.md, log.md
+  wiki/pages/                — 13 stub pages
+  .claude/skills/            — 4 skill files
+  .claude/commands/          — 5 command files
+  .claude/agents/            — 6 agent files
+  .claude/hooks/             — 2 hook files (.md only — Windows rule)
   .claude/settings.json
-  instructions/status.txt                  (THIS FILE — writing now)
+  CLAUDE.md                  — full 8-section rewrite
+  Discord_Bot_Setup_Guide.txt committed
 
-EMPTY DIRS (present but no user content yet)
-  data/
-  reports/
-  output/
-  jds/
+COMMIT 2 — Corrections: Gmail, OQ-3/OQ-4 resolved
+  .claude/agents/email-monitor-agent.md  — Hotmail → Gmail
+  wiki/pages/email-monitor.md            — Hotmail → Gmail
+  wiki/pages/open-questions.md           — OQ-3 resolved (Gmail confirmed)
+                                         — OQ-4 resolved (guide now in project)
 
-==============================================================
-4. OPEN DECISIONS
-==============================================================
-
-D1 — PERMISSION GATE vs AUTO MODE
-  mkdir was denied on attempt to create raw/, wiki/, wiki/pages/,
-  .claude/{commands,agents,hooks}. The denial reason treats the
-  "Proceed with Phase 1 execution" line in instructions.md as
-  planning-intent rather than a permission grant. Auto mode alone
-  does not override this.
-  RESOLUTION OPTIONS (Charles chooses):
-    (a) Add to .claude/settings.local.json:
-          {"permissions":{"allow":["Bash(mkdir:*)","Write"]}}
-    (b) Approve each mkdir + Write prompt as it appears.
-    (c) Invoke /permissions once and set a broad project-scoped
-        allowance.
-  BLOCKS: ALL of Phase 1 execution.
-
-D2 — DATA_CONTRACT vs Item C (CLAUDE.md)
-  DATA_CONTRACT.md lists CLAUDE.md as System Layer — safe to
-  auto-update. Item C instructs replacing CLAUDE.md entirely
-  with Charles-specific content. If Charles later runs
-  `node update-system.mjs apply`, Charles's CLAUDE.md will be
-  overwritten by upstream.
-  RESOLUTION OPTIONS:
-    (a) Accept risk and log in risks-incidents.md with instruction
-        to diff before any future update-system apply.
-    (b) Add CLAUDE.md to a project-local "do not touch" list in
-        update-system.mjs config (would require editing upstream —
-        violates surgical-changes rule).
-    (c) Move Charles-specific content to modes/_profile.md and
-        keep CLAUDE.md as a thin project pointer. REJECTED because
-        Item C is explicit about 8-section rewrite in CLAUDE.md.
-  RECOMMENDED: (a). Will log in risks-incidents.md.
-
-D3 — DATA_CONTRACT vs Item B (.claude/skills/)
-  DATA_CONTRACT lists .claude/skills/* as System Layer. Item B
-  adds 4 new Charles-specific skill files there (cv-generation,
-  job-scoring, cover-letter, interview-prep). Same overwrite risk
-  as D2.
-  RECOMMENDED: Same as D2 — accept and log. Future hardening can
-  move these under extensions/skills/ if needed.
-
-D4 — TRACKER COLUMN MISMATCH
-  Instructions specify applications.md columns:
-    Date | Company | Role | Track | Score | Portal | Status |
-    CV Version | Notes
-  Upstream merge-tracker.mjs writes 9 columns:
-    # | Date | Company | Role | Status | Score | PDF | Report |
-    Notes
-  Writing the new schema will break merge-tracker.mjs on first
-  invocation.
-  RESOLUTION OPTIONS:
-    (a) Follow instructions literally. merge-tracker.mjs breaks
-        but we already plan to supersede it in extensions/. Log
-        as risk.
-    (b) Superset: keep upstream 9 cols and add Track + CV Version
-        + Portal, giving 12 columns. merge-tracker.mjs tolerates
-        extra cols? Unknown without reading it.
-  RECOMMENDED: (a), literal. merge-tracker.mjs is upstream and
-  should not be edited; extensions will replace it.
-
-D5 — raw/instructions.md AUTHORITY
-  Original 417-line Phase 1 spec has been overwritten on disk by
-  the 34-line answers file. raw/ principle is "authoritative over
-  wiki/" based on source-mtime. Options:
-    (a) Copy current 34-line instructions.md into raw/ as-is.
-        Phase 1 plan preserved only in my session context plus
-        whatever I write to wiki/pages/system-overview.md.
-    (b) Reconstruct 417-line original from session context and
-        place in raw/instructions.md. Risk: faithfulness.
-  RECOMMENDED: (a). Phase 1 plan reproduced in
-  wiki/pages/system-overview.md as synthesis. Future auditability
-  preserved via git history of the file.
-
-D6 — LOCATION POLICY FOR RAIL JOBS
-  Reading UK is home. Rail/civils work is often site-based across
-  the UK (not Reading). Article-digest says score generously for
-  Track C. Open question for _profile.md location_policy:
-    * "Reading UK base, will commute UK-wide for site-based roles"
-    * "Remote preferred where available"
-    * Explicit comp differential for on-site extended stays
-  Not blocking; default to "Reading UK + UK-wide commute" unless
-  Charles says otherwise.
-
-D7 — LINKEDIN URL TIMING
-  Item 6 says leave "[LinkedIn - to be added]" in cv.md. But
-  profile.yml's linkedin: field still needs SOMETHING. Use empty
-  string or placeholder? Default: "" with comment pointing to
-  cv.md line 2.
+COMMIT 3 — Naming corrections
+  CLAUDE.md                              — career-bot → job-agent-ops-bot (x4)
+                                         — #career-ops-build → #job-agent-ops-build
+                                         — server → miclaud
+                                         — Upstream/Hotmail/career-ops cleanup
+  config/profile.yml                     — career-ops → project-neutral language (x2)
+  modes/_profile.md                      — career-ops → project-neutral language (x2)
+  wiki/hot.md                            — bot/channel/server corrections + updated state
+  wiki/index.md                          — career-bot → job-agent-ops-bot
+  wiki/pages/discord-integration.md      — bot/channel/server corrections throughout
+  wiki/pages/system-overview.md          — removed duplicate "fork of career-ops" ref
+  .claude/agents/email-monitor-agent.md  — obryann@hotmail.com → Gmail account
 
 ==============================================================
-5. EXACT NEXT TASK TO RESUME FROM
+2. OPEN DECISIONS STILL LIVE
 ==============================================================
 
-STEP 0 — Resolve D1 (permissions). Charles picks one of:
-  (a) Paste to .claude/settings.local.json:
-      {"permissions":{"allow":["Bash(mkdir:*)","Write","Edit"]}}
-  (b) Approve each prompt as it appears.
-  (c) Run /permissions in the CLI.
+OQ-1  LinkedIn URL — profile placeholder. Update when LinkedIn profile ready.
+OQ-2  Compensation — £45k–£70k assumed. Charles to confirm or adjust.
+OQ-5  Adzuna API keys — disabled in portals.yml until ADZUNA_APP_ID + ADZUNA_API_KEY in .env.
+OQ-6  SerpAPI key — disabled until SERPAPI_KEY in .env.
+OQ-7  Location for Track C — "Reading UK base, will commute UK-wide" assumed. Confirm.
 
-STEP 1 — Create all missing directories in ONE batch:
-  mkdir -p \
-    C:/Users/obrya/Documents/job_agent_ops/raw \
-    C:/Users/obrya/Documents/job_agent_ops/wiki/pages \
-    C:/Users/obrya/Documents/job_agent_ops/.claude/commands \
-    C:/Users/obrya/Documents/job_agent_ops/.claude/agents \
-    C:/Users/obrya/Documents/job_agent_ops/.claude/hooks
+D2/D3 DATA_CONTRACT tension — CLAUDE.md and .claude/skills/* listed as System Layer.
+      Risk: future update-system.mjs apply may overwrite. Logged in risks-incidents.md.
+      Action: always diff CLAUDE.md before running update-system.mjs apply.
 
-STEP 2 — Batch A (simple onboarding, parallel Writes):
-  - config/profile.yml              (populate with Charles's data)
-  - data/applications.md            (9-col header row only)
-  - data/pipeline.md                (6-col header, empty table)
-
-STEP 3 — Batch B (complex onboarding, sequential Writes):
-  - portals.yml                     (UK-curated from example)
-  - modes/_profile.md               (4 tracks + thresholds + Item D
-                                     archetypes + EDMS detection +
-                                     never-include + cover-letter
-                                     principles + portal mapping)
-
-STEP 4 — Batch C (wiki scaffold, parallel Writes):
-  - raw/cv.md                       (copy of root cv.md)
-  - raw/article-digest.md           (copy of root)
-  - raw/instructions.md             (copy of current 34-line)
-  - WIKI.md                         (schema rules)
-  - wiki/hot.md
-  - wiki/index.md
-  - wiki/log.md
-
-STEP 5 — Batch D (13 wiki stubs, parallel Writes):
-  Each stub: frontmatter (status, last_updated: 2026-04-24,
-  last_verified: 2026-04-24, sources: [...], synthesis: ...) +
-  1-line summary + source pointer + TODO list.
-
-STEP 6 — Batch E (.claude scaffold, parallel Writes):
-  18 files across skills/ (4), commands/ (5), agents/ (6),
-  hooks/ (2), settings.json (1).
-
-STEP 7 — Batch F: CLAUDE.md full rewrite per Item C 8-section spec.
-
-STEP 8 — Validation:
-  - node doctor.mjs (informational only; expected complaints about
-    merge-tracker.mjs column mismatch)
-  - git status (show clean diff)
-  - Spot-check: wiki/index.md references all 13 pages; each stub
-    has valid frontmatter; hooks/ contains only .md files.
-
-STEP 9 — Commit on branch phase-1-foundation:
-  - Single commit "Phase 1 foundation: onboarding, wiki scaffold,
-    .claude structure, CLAUDE.md rewrite"
-  - PR to main once Charles reviews locally.
-
-STEP 10 — End session. Phase 2 begins new session per instructions.
+D4    applications.md schema differs from merge-tracker.mjs. Intentional. Will be
+      superseded by extensions/. Logged in risks-incidents.md as R3.
 
 ==============================================================
-FIRST CONCRETE ACTION ON RESUME
+3. PHASE 2 — READY TO BEGIN (new session)
 ==============================================================
 
-Confirm D1 resolution path with Charles, then execute STEP 1.
+STEP 1 — Discord bot setup
+  - Create #job-agent-ops-build channel on miclaud server
+  - Create bot application in Discord Developer Portal (name: job-agent-ops-bot)
+  - Enable all 3 Privileged Gateway Intents
+  - Create state dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
+  - Create .env and access.json in state dir (templates in discord-integration.md)
+  - Create batch file: C:\Users\obrya\start-job-agent-ops.bat
+  - Run batch file → confirm bot goes green + responds to test message
+  - Update CLAUDE.md section 4: remove "reference only" label, add confirmed channel ID
+  - Update wiki/pages/discord-integration.md status: planned → current
+  - Commit on feat/phase-2-discord
 
-END OF HANDOFF
+STEP 2 — Build extensions/ folder
+  extensions/notifications/       Discord client, event types, embed templates
+  extensions/email_monitor/        Gmail API (OAuth), classifier, tracker updater
+  extensions/quota_manager/        5hr rolling window, batch throttle, priority queue
+  extensions/interview_prep/       auto-trigger, prep pack generator, Discord delivery
+  extensions/cv_diff/              master vs tailored diff, EDMS detection for Track D
+  extensions/deadline_manager/     follow-up scheduler, interview countdown, state machine
+  extensions/job_discovery/        Adzuna API + SerpAPI Google Jobs adapters
+  orchestrator.py
+  requirements.txt
+  .env (gitignored — add API keys here)
+
+STEP 3 — First live run
+  - Add first JD URL to data/pipeline.md
+  - Run /career-ops pipeline
+  - Verify score, track selection, CV diff, cover letter, Discord approval flow
+  - Submit only after Charles approves in Discord
+
+==============================================================
+FIRST CONCRETE ACTION ON PHASE 2 RESUME
+==============================================================
+
+Read wiki/hot.md → confirm bot/channel details → execute STEP 1 Discord setup.
+Full procedure: Discord_Bot_Setup_Guide.txt (project root).
+
+END OF STATUS

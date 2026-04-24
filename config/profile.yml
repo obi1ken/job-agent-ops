@@ -64,7 +64,7 @@ target_roles:
       profile_block: "Document Control & Information Management"
 
   archetypes:
-    # Existing career-ops archetypes — serve Tracks A and B
+    # Archetypes — serve Tracks A and B
     - name: "AI Platform / LLMOps Engineer"
       fit: "primary"
       tracks: [A]
@@ -151,7 +151,7 @@ scoring_thresholds:
 portal_profile_mapping:
   # Profile stored on each portal (upload once, static)
   LinkedIn:   { track: B, reason: "95% UK recruiters, senior/PM/product roles dominate" }
-  Indeed:     { track: B, reason: "Most versatile, widest audience; career-ops overrides per application" }
+  Indeed:     { track: B, reason: "Most versatile, widest audience; apply track overrides per application" }
   Reed:       { track: D, reason: "Strong rail/civils/construction, agency-backed quality leads" }
   Totaljobs:  { track: C, reason: "Infrastructure and engineering, 21M CV database" }
   CWJobs:     { track: A, reason: "IT/tech niche specialist, 45% better conversion for tech roles" }

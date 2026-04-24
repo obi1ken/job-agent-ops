@@ -8,7 +8,7 @@ and classifying them. Phase 2 only.
 Read, Write, Bash (for email API calls)
 
 ## Inputs
-- Inbound emails from obryann@hotmail.com
+- Inbound emails from Charles's Gmail account (address in .env as GMAIL_ADDRESS)
 - data/applications.md (match emails to tracked applications)
 
 ## Outputs

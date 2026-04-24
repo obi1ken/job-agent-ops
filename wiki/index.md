@@ -26,7 +26,7 @@
 
 | Page | Status | Summary |
 |------|--------|---------|
-| [discord-integration](pages/discord-integration.md) | planned | career-bot setup, event types, notification taxonomy |
+| [discord-integration](pages/discord-integration.md) | planned | job-agent-ops-bot setup, event types, notification taxonomy |
 | [email-monitor](pages/email-monitor.md) | planned | Gmail polling, 5-class response classifier, tracker state updates |
 
 ## Reference

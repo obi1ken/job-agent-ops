@@ -1,6 +1,6 @@
 # User Profile Context — Charles Asiegbu
 # Generated: 2026-04-24
-# THIS FILE IS YOURS. It will NEVER be auto-updated by career-ops updates.
+# THIS FILE IS YOURS. It will NEVER be auto-updated by upstream updates.
 # All 4-track rules, thresholds, proof points, and never-include rules live here.
 
 <!-- ============================================================
@@ -324,7 +324,7 @@ These serve Tracks A and B. Preserved intact.
 | Portal | Stored Profile | Rationale |
 |--------|---------------|-----------|
 | LinkedIn | Track B (Product/Leadership) | 95% UK recruiters headhunt here; senior/PM/product dominates |
-| Indeed | Track B (Product/Leadership) | Most versatile, widest audience; career-ops overrides per application |
+| Indeed | Track B (Product/Leadership) | Most versatile, widest audience; apply track overrides per application |
 | Reed | Track D (Document Control) | Strong rail/civils/construction; agency-backed quality leads |
 | Totaljobs | Track C (Rail/Civils Digital) | Infrastructure and engineering; 21M CV database |
 | CWJobs | Track A (Engineering/AI) | IT/tech niche specialist; 45% better conversion for tech roles |

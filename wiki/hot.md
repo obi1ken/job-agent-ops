@@ -1,36 +1,39 @@
 # hot.md — Rolling Session Context
 # Max ~500 words. Updated when Charles says "update hot" or 5+ files written in a session.
 
-Last updated: 2026-04-24
+Last updated: 2026-04-24 (commit 3 — naming corrections)
 
 ---
 
 ## What Just Shipped
 
-Phase 1 foundation is complete. All onboarding and scaffold files written in one session.
+Phase 1 is FULLY COMPLETE. Three commits on feat/phase-1-foundation.
 
-Files created:
-- config/profile.yml — Charles's full profile, 4 tracks, thresholds, portal mapping
-- modes/_profile.md — canonical 4-track rules, proof points, archetypes, never-include rules
-- portals.yml — UK-curated scanner config (6 profile portals + Adzuna/SerpAPI + 20 tracked companies)
-- data/applications.md — tracker initialised (empty, correct headers)
-- data/pipeline.md — URL inbox initialised (empty, ready to receive)
-- WIKI.md — wiki schema and governance rules
-- raw/ — seeded with cv.md, article-digest.md, instructions.md
-- wiki/ — hot.md, index.md, log.md
-- wiki/pages/ — 13 stub pages (approved skeleton)
-- .claude/skills/ — 4 skill files
-- .claude/commands/ — 5 command files
-- .claude/agents/ — 6 agent files
-- .claude/hooks/ — 2 hook files (.md only, no .sh)
-- .claude/settings.json
-- CLAUDE.md — full rewrite per 8-section spec
+Commit 1 — Phase 1 foundation:
+- config/profile.yml, modes/_profile.md, portals.yml
+- data/applications.md, data/pipeline.md
+- WIKI.md, raw/, wiki/ (hot/index/log), wiki/pages/ (13 stubs)
+- .claude/skills/ (4), commands/ (5), agents/ (6), hooks/ (2), settings.json
+- CLAUDE.md — full 8-section rewrite
+- Discord_Bot_Setup_Guide.txt committed
+
+Commit 2 — Gmail and bot name corrections:
+- email-monitor-agent.md, wiki/pages/email-monitor.md: Hotmail → Gmail
+- OQ-3 marked resolved (Gmail confirmed for job applications)
+- OQ-4 resolved (Discord_Bot_Setup_Guide.txt now in project)
+
+Commit 3 — Naming corrections (current):
+- All career-bot → job-agent-ops-bot
+- All #career-ops-build → #job-agent-ops-build
+- Server reference → miclaud
+- Removed all "career-ops" from project-layer files (upstream untouched)
+- Gmail API confirmed throughout email_monitor references
 
 ---
 
 ## What Is In Progress
 
-Nothing. Phase 1 is done.
+Nothing. Phase 1 is done. Phase 2 ready to begin.
 
 ---
 
@@ -39,12 +42,12 @@ Nothing. Phase 1 is done.
 **Phase 2 — new session required.**
 
 Phase 2 sequence:
-1. Discord bot setup (career-bot via plugin:discord@claude-plugins-official)
+1. Discord bot setup (job-agent-ops-bot via plugin:discord@claude-plugins-official)
    - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
    - Batch file: C:\Users\obrya\start-job-agent-ops.bat
-   - Channel: #career-ops-build on grok_portfolio_manager server
+   - Channel: #job-agent-ops-build on miclaud server
    - Charles's Discord user ID: 1379195691624038440
-   - NOTE: Discord_Bot_Setup_Guide.txt not yet in project — Charles to add or provide details
+   - Discord_Bot_Setup_Guide.txt is in project root — refer to it for full setup procedure
 2. Update CLAUDE.md Discord section from "reference only" to confirmed bot details
 3. Build extensions/ folder:
    - extensions/notifications/ (Discord client, event types, embed templates)

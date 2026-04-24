@@ -10,7 +10,7 @@ synthesis: Project identity, two-phase roadmap, and architectural rules synthesi
 
 # System Overview
 
-Job Agent Ops is a fork of santifer/career-ops, extended for Charles Asiegbu (Reading UK) with
+Job Agent Ops is Charles Asiegbu's autonomous job search pipeline (Reading UK), with
 4 CV tracks, UK portal integrations, Discord notifications, and Gmail monitoring.
 
 ## TODO

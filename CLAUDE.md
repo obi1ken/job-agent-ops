@@ -8,16 +8,16 @@
 ## 1. Project Identity
 
 Job Agent Ops is an autonomous job search pipeline for Charles Asiegbu, based in
-Reading UK. It is a fork of santifer/career-ops, extended with:
+Reading UK. It extends the upstream santifer/career-ops system with:
 
 - 4 CV tracks (A=Engineering, B=Product/Leadership, C=Rail/Civils Digital, D=Document Control)
 - UK portal integrations (CWJobs, LinkedIn, Reed, Totaljobs, RailwayPeople, Indeed)
 - Discovery sources (Adzuna API, Google Jobs via SerpAPI)
-- Discord notification system — career-bot (Phase 2)
-- Gmail/Outlook email monitor with response classifier (Phase 2)
+- Discord notification system — job-agent-ops-bot (Phase 2)
+- Gmail email monitor with response classifier (Phase 2)
 - Extension layer in extensions/ for all net-new capability
 
-Upstream career-ops files (modes/, templates/, *.mjs scripts, dashboard/) are preserved
+Upstream files (modes/, templates/, *.mjs scripts, dashboard/) are preserved
 intact and must not be modified without explicit instruction from Charles.
 
 ---
@@ -55,20 +55,20 @@ If any file is missing: stop and flag to Charles before proceeding.
 
 ---
 
-## 4. Discord Bot — career-bot (Reference Only — Phase 2)
+## 4. Discord Bot — job-agent-ops-bot (Reference Only — Phase 2)
 
 The Discord bot is not yet configured. The details below are for reference when
 Phase 2 setup begins. Do not attempt bot operations until Phase 2 is active.
 
-- Bot name: career-bot (2-way, CMD batch file)
+- Bot name: job-agent-ops-bot (2-way, CMD batch file)
 - Batch file: C:\Users\obrya\start-job-agent-ops.bat
-- Channel: #career-ops-build (job-agent-ops server)
+- Channel: #job-agent-ops-build (miclaud server)
 - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
 - Charles's Discord user ID: 1379195691624038440
 - Plugin: plugin:discord@claude-plugins-official (NOT server:discord)
 - Setup guide: Discord_Bot_Setup_Guide.txt (project root)
 
-When bot is live: all approvals, alerts, and notifications go via career-bot.
+When bot is live: all approvals, alerts, and notifications go via job-agent-ops-bot.
 
 ---
 
@@ -84,7 +84,7 @@ For every application:
 - Wait for explicit approval
 - Only then submit
 
-Phase 2: approval comes via Discord career-bot. Until then: approval comes in chat.
+Phase 2: approval comes via Discord job-agent-ops-bot. Until then: approval comes in chat.
 
 ---
 
@@ -120,7 +120,7 @@ the upstream/extension boundary.
 
 Phase 2 extensions:
 - extensions/notifications/ — Discord client and event types
-- extensions/email_monitor/ — Outlook/Hotmail polling and classifier
+- extensions/email_monitor/ — Gmail API polling and response classifier
 - extensions/quota_manager/ — Claude API token window management
 - extensions/interview_prep/ — prep pack generation and delivery
 - extensions/cv_diff/ — master vs tailored diff logger + EDMS detection
@@ -132,7 +132,7 @@ Phase 2 extensions:
 
 ## 8. Upstream Preservation
 
-The following are upstream career-ops files. Preserve them intact.
+The following are upstream files. Preserve them intact.
 Only touch them if Charles explicitly instructs it.
 
 - modes/_shared.md — base scoring system and global rules

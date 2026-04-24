@@ -4,7 +4,7 @@ last_updated: 2026-04-24
 last_verified: 2026-04-24
 sources:
   - raw/instructions.md
-synthesis: Discord career-bot setup parameters and step-by-step procedure from Discord_Bot_Setup_Guide.txt (Phase 2)
+synthesis: Discord job-agent-ops-bot setup parameters and step-by-step procedure from Discord_Bot_Setup_Guide.txt (Phase 2)
 ---
 
 # Discord Integration
@@ -17,9 +17,9 @@ Setup guide: `Discord_Bot_Setup_Guide.txt` (project root) — full procedure wit
 
 | Item | Value |
 |------|-------|
-| Bot name | career-bot |
-| Channel | #career-ops-build |
-| Server | job-agent-ops |
+| Bot name | job-agent-ops-bot |
+| Channel | #job-agent-ops-build |
+| Server | miclaud |
 | Charles's Discord user ID | 1379195691624038440 |
 | State dir | `C:\Users\obrya\.claude\channels\discord-job-agent-ops\` |
 | Batch file | `C:\Users\obrya\start-job-agent-ops.bat` |
@@ -63,11 +63,11 @@ claude --channels plugin:discord@claude-plugins-official
 
 ## Setup sequence (from Discord_Bot_Setup_Guide.txt)
 
-1. Discord Developer Portal → New Application → name it `career-bot`
-2. Bot section → username `career-bot` → Reset Token → copy token (shown once only)
+1. Discord Developer Portal → New Application → name it `job-agent-ops-bot`
+2. Bot section → username `job-agent-ops-bot` → Reset Token → copy token (shown once only)
 3. Privileged Gateway Intents → enable ALL THREE (Presence, Server Members, Message Content)
 4. OAuth2 URL Generator → Scopes: bot → Permissions: Send Messages, Read Messages, Read Message History → invite to server
-5. Discord server → create `#career-ops-build` channel → Developer Mode → right-click → Copy Channel ID
+5. Discord server (miclaud) → create `#job-agent-ops-build` channel → Developer Mode → right-click → Copy Channel ID
 6. Create state dir and files (see above)
 7. Create batch file (see above)
 8. Double-click batch file → wait for "Listening for channel messages from: plugin:discord@claude-plugins-official"
