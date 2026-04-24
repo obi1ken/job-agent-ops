@@ -1,0 +1,509 @@
+Discord Bot Setup Guide
+For New Claude Code Projects
+Windows 11 · Claude Code · Current Workaround Setup
+Last updated: 2026-04-11
+
+================================================================================
+Overview
+================================================================================
+
+This guide walks you through setting up a dedicated Discord bot for any new
+Claude Code project. Each project gets its own bot, its own Discord channel,
+and its own batch file.
+
+This is the current workaround for a Windows bug where the Discord plugin
+ignores DISCORD_STATE_DIR.
+
+Time to complete: approximately 15 minutes per project.
+
+Current active projects:
+  costfeed.co   ->  start-costfeed.bat   ->  #costfeed-build   ->  costly-bot
+  mt5_ai_agent  ->  start-mt5.bat        ->  #mt5-agent        ->  mt5-bot
+  lobi-eco      ->  start-lobi-eco.bat   ->  6 channels + DM   ->  lobi-eco-bot
+
+
+================================================================================
+Step 1 — Create the Discord Bot
+================================================================================
+
+Go to the Discord Developer Portal and create a new application for your project.
+
+1.1  Create a New Application
+
+  1.  Go to discord.com/developers/applications
+  2.  Click New Application in the top right
+  3.  Name it after your project — e.g. myproject-bot
+  4.  Click Create
+
+1.2  Create the Bot User
+
+  5.  In the left sidebar click Bot
+  6.  Give the bot a username — e.g. myproject-bot
+  7.  Scroll up to Token and click Reset Token
+  8.  Copy the token immediately — it is only shown once
+  9.  Save it somewhere secure — you will need it later
+
+  WARNING: Never share your bot token with anyone. If exposed, reset it
+  immediately in the Developer Portal.
+
+1.3  Enable Required Intents
+
+  Still on the Bot page, scroll down to Privileged Gateway Intents and enable
+  all three:
+
+  - Presence Intent — ON
+  - Server Members Intent — ON
+  - Message Content Intent — ON  (critical — without this the bot cannot read
+    messages)
+
+  TIP: If Message Content Intent is OFF the bot will receive messages but with
+  empty content. It will appear to work but never respond correctly.
+
+1.4  Add the Bot to Your Discord Server
+
+  10. In the left sidebar click OAuth2
+  11. Click URL Generator
+  12. Under Scopes tick bot
+  13. Under Bot Permissions tick:
+      - Send Messages
+      - Read Messages / View Channels
+      - Read Message History
+  14. Copy the Generated URL at the bottom
+  15. Open that URL in your browser
+  16. Select your Discord server and click Authorise
+
+  WARNING: The bot must be in your server before it can receive or send
+  messages. Being in the Developer Portal is not enough.
+
+
+================================================================================
+Step 2 — Create a Discord Channel
+================================================================================
+
+Each project needs its own dedicated channel in your Discord server.
+
+  17. Open your Discord server
+  18. Click the + icon next to Text Channels
+  19. Name it after your project — e.g. myproject-build
+  20. Click Create Channel
+
+2.1  Get the Channel ID
+
+  You need the channel ID for the access configuration.
+
+  21. In Discord go to User Settings -> Advanced
+  22. Turn on Developer Mode
+  23. Go back to your server
+  24. Right-click the new channel
+  25. Click Copy Channel ID
+  26. Save this ID — you will need it in Step 4
+
+
+================================================================================
+Step 3 — Set Up the State Directory
+================================================================================
+
+Each project needs its own state directory to store the bot token and access
+configuration separately from other projects.
+
+3.1  Create the State Directory
+
+  Open CMD and run:
+
+    mkdir "C:\Users\obrya\.claude\channels\discord-PROJECTNAME"
+
+  Replace PROJECTNAME with your actual project name — e.g. discord-myproject
+
+3.2  Create the .env File
+
+  Open Notepad:
+
+    notepad "C:\Users\obrya\.claude\channels\discord-PROJECTNAME\.env"
+
+  Paste this content — replace YOUR_BOT_TOKEN with the token you copied in
+  Step 1.2:
+
+    DISCORD_BOT_TOKEN=YOUR_BOT_TOKEN
+    DISCORD_STATE_DIR=C:\Users\obrya\.claude\channels\discord-PROJECTNAME
+
+  Save and close.
+
+3.3  Create the access.json File
+
+  Open Notepad:
+
+    notepad "C:\Users\obrya\.claude\channels\discord-PROJECTNAME\access.json"
+
+  Paste this content — replace YOUR_DISCORD_USER_ID with your Discord user ID
+  and YOUR_CHANNEL_ID with the channel ID from Step 2.1:
+
+    {
+      "dmPolicy": "allowlist",
+      "allowFrom": ["YOUR_DISCORD_USER_ID"],
+      "groups": {
+        "YOUR_CHANNEL_ID": {
+          "requireMention": false,
+          "allowFrom": []
+        }
+      },
+      "pending": {}
+    }
+
+  For multiple channels (e.g. lobi-eco-bot), add each channel ID as a separate
+  key in "groups":
+
+    {
+      "dmPolicy": "allowlist",
+      "allowFrom": ["YOUR_DISCORD_USER_ID"],
+      "groups": {
+        "CHANNEL_ID_1": { "requireMention": false, "allowFrom": [] },
+        "CHANNEL_ID_2": { "requireMention": false, "allowFrom": [] },
+        "CHANNEL_ID_3": { "requireMention": false, "allowFrom": [] }
+      },
+      "pending": {}
+    }
+
+  Save and close.
+
+3.4  Create the approved Directory
+
+    mkdir "C:\Users\obrya\.claude\channels\discord-PROJECTNAME\approved"
+
+
+================================================================================
+Step 4 — Create the Batch File
+================================================================================
+
+Due to a current Windows bug in the Claude Code Discord plugin,
+DISCORD_STATE_DIR is ignored when reading the bot token. The workaround is a
+batch file that injects the correct token as an environment variable before
+starting Claude Code.
+
+4.1  Create the Batch File
+
+  Open Notepad:
+
+    notepad "C:\Users\obrya\start-PROJECTNAME.bat"
+
+  Paste this content — replace YOUR_FULL_BOT_TOKEN with your actual token and
+  update the project directory path:
+
+    @echo off
+    set DISCORD_BOT_TOKEN=YOUR_FULL_BOT_TOKEN
+    set DISCORD_STATE_DIR=C:\Users\obrya\.claude\channels\discord-PROJECTNAME
+    cd C:\Users\obrya\Documents\PROJECTNAME
+    claude --channels plugin:discord@claude-plugins-official
+
+  Save and close.
+
+  WARNING: The set commands only affect the current CMD window. They do not
+  overwrite any files so multiple batch files can run concurrently without
+  conflict.
+
+  CRITICAL: The batch file MUST use:
+    plugin:discord@claude-plugins-official
+  Do NOT use "server:discord" — the "server:" prefix only enables MCP tools
+  but does NOT enable inbound message push. The "plugin:" prefix enables BOTH
+  MCP tools AND inbound message push. Without "plugin:", the bot will connect
+  and show typing indicators, but will never actually receive your messages.
+
+
+================================================================================
+Step 5 — Start and Pair
+================================================================================
+
+5.1  Start Claude Code
+
+  27. Double-click the batch file you created in Step 4
+  28. A CMD window opens and Claude Code starts
+  29. Wait for the line:
+        Listening for channel messages from: plugin:discord@claude-plugins-official
+  30. Check Discord — your bot should show a green online dot
+
+  TIP: If the bot does not go green, check that the token in the batch file is
+  correct and that Message Content Intent is enabled in the Developer Portal.
+
+5.2  Verify the Bot is Working
+
+  31. Send a message in your project Discord channel
+  32. The bot should respond
+  33. If it does not respond, check the access.json has the correct channel ID
+      from Step 2.1
+
+5.3  Test DM Pairing (Optional)
+
+  If you want to also communicate via DM with the bot:
+
+  34. DM the bot any message
+  35. If dmPolicy is set to pairing it will reply with a 6-character code
+  36. In the Claude Code terminal run:
+
+        /discord:access pair PAIRING_CODE
+
+  37. Your DM is now paired
+
+  NOTE: The current setup uses dmPolicy: allowlist which means only your user
+  ID can interact. This is more secure than pairing mode.
+
+
+================================================================================
+Step 6 — Running Multiple Projects Concurrently
+================================================================================
+
+Each project has its own batch file. To run two or more projects at the same
+time:
+
+  38. Double-click start-costfeed.bat — costfeed session opens
+  39. Double-click start-mt5.bat — mt5 session opens in a separate window
+  40. Double-click start-lobi-eco.bat — lobi-eco session opens
+  41. Each session uses its own bot token and communicates with its own channel(s)
+  42. No conflict between sessions
+
+
+================================================================================
+Step 7 — Quick Reference Checklist
+================================================================================
+
+Use this checklist every time you set up a new project bot:
+
+  [ ] Discord Developer Portal — create new application
+  [ ] Bot section — create username, reset token, copy token
+  [ ] Privileged Gateway Intents — enable all three
+  [ ] OAuth2 URL Generator — invite bot to server
+  [ ] Discord server — create new channel for project
+  [ ] Developer Mode — copy channel ID
+  [ ] Create state directory: .claude/channels/discord-PROJECTNAME/
+  [ ] Create .env file with token and state dir
+  [ ] Create access.json with user ID and channel ID(s)
+  [ ] Create approved/ directory
+  [ ] Create batch file: start-PROJECTNAME.bat
+  [ ] Verify batch file uses "plugin:discord@claude-plugins-official" (NOT server:)
+  [ ] Double-click batch file and verify bot goes green
+  [ ] Send test message in channel and verify response
+  [ ] Test DM if using DM mode
+
+
+================================================================================
+Troubleshooting
+================================================================================
+
+--- Bot is not going green after starting ---
+
+  - Check the token in the batch file is correct and not expired
+  - Reset the token in Discord Developer Portal and update the batch file
+  - Make sure Message Content Intent is ON
+  - Check for OS-level environment variable override: if DISCORD_BOT_TOKEN is
+    set as a system/user environment variable in Windows, it will override the
+    batch file "set" command. Remove it from Windows Environment Variables
+    (System Properties -> Environment Variables) if present. The batch file
+    should be the ONLY source of the token.
+
+--- Bot goes green but does not respond to channel messages ---
+
+  - Check access.json has the correct channel ID
+  - Right-click the channel in Discord and copy ID again to verify
+  - Make sure requireMention is set to false in access.json
+  - Run /reload-plugins in the Claude Code terminal
+  - Check plugin validation: if Claude Code shows "Plugin discord not found in
+    marketplace" then the marketplace sync failed — see the Marketplace Sync
+    section below
+
+--- Bot shows typing indicator but never responds ---
+
+  This is the classic symptom of partial plugin validation. The Discord gateway
+  connects (bot goes green, typing shows), but inbound message PUSH is
+  disabled. This means:
+
+  - MCP tools are loaded (bot can send messages if asked internally)
+  - But inbound messages from Discord are NOT being delivered to Claude
+
+  Causes:
+  1. Using "server:discord" instead of "plugin:discord@claude-plugins-official"
+     in the batch file — server: prefix only gives tools, not push
+  2. Marketplace sync failure — see below
+  3. Using --plugin-dir or --dangerously-load-development-channels — these load
+     tools but do NOT enable push
+
+  Fix: Ensure batch file uses the plugin: prefix AND marketplace sync is clean.
+
+--- Bot responds in one session but not the other ---
+
+  - Make sure each batch file sets DISCORD_BOT_TOKEN to its own token
+  - Make sure each batch file sets DISCORD_STATE_DIR to its own directory
+  - Do not use /discord:configure — it writes to the global path and ignores
+    state dir
+
+--- Session startup error ---
+
+  - Check .claude/hooks/ folder is empty — remove any .sh files if present
+  - These are bash files that do not work on Windows and cause startup errors
+
+--- Token override from OS environment ---
+
+  If your bot connects but uses the WRONG token (e.g. sends messages as a
+  different bot), a Windows environment variable is overriding your batch file.
+
+  Diagnosis:
+  1. Open CMD and run: echo %DISCORD_BOT_TOKEN%
+  2. If this shows a token BEFORE you run your batch file, there is an OS-level
+     variable set
+
+  Fix:
+  1. Open System Properties -> Environment Variables
+  2. Check both User variables and System variables for DISCORD_BOT_TOKEN
+  3. Delete it — tokens should ONLY be set in batch files
+  4. Alternatively, if your project's config.py uses python-dotenv, set
+     override=True in the load_dotenv() call so .env values take priority over
+     OS environment variables
+
+--- Config changes not taking effect ---
+
+  .env values are read at process startup only. Changing .env does NOT affect
+  an already-running session. You must restart the batch file for changes to
+  take effect. "This change is now live" is NEVER true until the process is
+  restarted.
+
+
+================================================================================
+Marketplace Sync — Critical Knowledge
+================================================================================
+
+This section covers the most complex failure mode encountered. Understanding
+this will save hours of debugging.
+
+--- What is the marketplace? ---
+
+  Claude Code plugins are managed by a marketplace system. When a session
+  starts, it syncs from the upstream repository
+  (anthropics/claude-plugins-official) to a local cache. The sync downloads
+  plugins to a .staging directory, then replaces the live directory with the
+  staged copy.
+
+--- What can go wrong ---
+
+  The upstream repo can reorganize plugin directories at any time. For example,
+  discord was moved from plugins/ to external_plugins/. The marketplace handles
+  this via a .claude-plugin/marketplace.json mapping file that tells Claude
+  Code where to find each plugin.
+
+  The sync process:
+  1. Downloads everything to .staging (includes marketplace.json)
+  2. Deletes the live marketplace directory
+  3. Moves .staging to live
+
+  If step 2 fails (because files are locked by a running session), the sync
+  PARTIALLY completes:
+  - external_plugins/discord exists (new location)
+  - BUT marketplace.json is missing from the live directory
+  - Without marketplace.json, Claude Code falls back to scanning only plugins/
+  - discord is not in plugins/ -> validation fails
+  - Plugin partially loads: MCP tools work, but push is DISABLED
+
+--- Symptoms of marketplace sync failure ---
+
+  - /doctor shows "Plugin discord not found in marketplace claude-plugins-official"
+  - Bot goes green and shows typing, but never receives messages
+  - One bot works (session started before the change) but new sessions do not
+  - Running sessions continue to work because they validated on startup
+
+--- The fix ---
+
+  1. CLOSE ALL Claude Code sessions (every CMD window running claude)
+     This releases all file locks on the marketplace directory
+  2. Start ANY one of your batch files
+     The sync will now complete cleanly:
+     - .staging downloads with marketplace.json
+     - Live directory is deleted (no EBUSY because nothing locks it)
+     - .staging moves to live
+     - Validation finds discord via marketplace.json -> external_plugins/discord
+     - Plugin fully loads with push enabled
+  3. Start your remaining batch files
+     All sessions will now work because the marketplace is clean
+
+--- What does NOT fix it ---
+
+  These were all tried and confirmed to NOT work:
+
+  - Symlink plugins/ -> external_plugins/
+    (wiped by sync on every startup)
+  - Editing lastUpdated timestamp to force re-sync
+    (sync ignores the timestamp)
+  - Creating a local marketplace with source: "local"
+    (invalid source type, not recognized)
+  - Using --plugin-dir to point at external_plugins/
+    (tools load but push does NOT work)
+  - Using --dangerously-load-development-channels
+    (tools load but push does NOT work)
+  - Direct .mcp.json MCP server config
+    (tools load but push does NOT work — MCP server is different from plugin
+    channel listener)
+  - Manually copying marketplace.json into the live directory
+    (wiped by sync on next startup)
+  - /reload-plugins
+    (reloads tools, does not re-validate marketplace structure)
+
+--- Key principle ---
+
+  The "plugin:" prefix in --channels enables BOTH MCP tools AND inbound
+  message push. The "server:" prefix only enables MCP tools. Push requires the
+  plugin to be fully validated by the marketplace system. Any partial
+  validation (marketplace error, missing marketplace.json) gives you tools but
+  no push.
+
+--- Prevention ---
+
+  When the upstream marketplace changes plugin structure, the ONLY reliable fix
+  is a clean sync with no file locks. If bots stop receiving messages after a
+  Claude Code update:
+
+  1. Close ALL sessions
+  2. Restart one session (let sync complete)
+  3. Restart remaining sessions
+
+  This takes 2 minutes and avoids hours of debugging.
+
+
+================================================================================
+Architecture Notes
+================================================================================
+
+--- File locations ---
+
+  State directories:   C:\Users\obrya\.claude\channels\discord-{project}\
+  Each contains:       .env, access.json, approved/
+  Batch files:         C:\Users\obrya\start-{project}.bat
+  Plugin config:       C:\Users\obrya\.claude\settings.local.json
+                       (enabledPlugins + env DISCORD_STATE_DIR)
+  Plugin cache:        C:\Users\obrya\.claude\installed_plugins.json
+
+--- settings.local.json ---
+
+  Should contain enabledPlugins pointing to the discord plugin and the
+  DISCORD_STATE_DIR environment variable. Keep this clean — do not add
+  .mcp.json files, .discord-plugin directories, or local marketplace artifacts.
+
+--- installed_plugins.json ---
+
+  Contains entries for each project bot pointing to the cache. Should have one
+  entry per project. If this file gets corrupted, delete it and restart — it
+  will be regenerated from the marketplace.
+
+--- What NOT to touch ---
+
+  - Do not use /discord:configure — it writes to global paths, not state dirs
+  - Do not create .mcp.json files for Discord — they load tools but not push
+  - Do not create .discord-plugin directories — they are not the plugin system
+  - Do not set DISCORD_BOT_TOKEN as a Windows environment variable — use batch
+    files only
+  - Do not set DISCORD_WEBHOOK_URL in project .env files unless you specifically
+    need webhook delivery (it can conflict with bot message delivery)
+
+
+================================================================================
+Internal Reference
+================================================================================
+
+  Guide maintained for: costfeed.co, mt5_ai_agent, lobi-eco
+  Windows bug workaround current as of Claude Code v2.1.87+
+  Last incident: 2026-04-11 marketplace sync failure (resolved)
+  Charles's Discord user ID: 1379195691624038440

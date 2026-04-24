@@ -62,11 +62,11 @@ Phase 2 setup begins. Do not attempt bot operations until Phase 2 is active.
 
 - Bot name: career-bot (2-way, CMD batch file)
 - Batch file: C:\Users\obrya\start-job-agent-ops.bat
-- Channel: #career-ops-build (grok_portfolio_manager server)
+- Channel: #career-ops-build (job-agent-ops server)
 - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
 - Charles's Discord user ID: 1379195691624038440
 - Plugin: plugin:discord@claude-plugins-official (NOT server:discord)
-- Setup guide: Discord_Bot_Setup_Guide.txt (to be added to project root)
+- Setup guide: Discord_Bot_Setup_Guide.txt (project root)
 
 When bot is live: all approvals, alerts, and notifications go via career-bot.
 
