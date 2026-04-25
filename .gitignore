@@ -24,6 +24,9 @@ jds/*
 
 # Secrets (never commit — use .env.example as template)
 .env
+extensions/email_monitor/credentials.json
+extensions/email_monitor/token.json
+extensions/email_monitor/poll_state.json
 
 # Generated
 .resolved-prompt-*
