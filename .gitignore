@@ -27,6 +27,7 @@ jds/*
 extensions/email_monitor/credentials.json
 extensions/email_monitor/token.json
 extensions/email_monitor/poll_state.json
+extensions/job_discovery/discovery_state.json
 
 # Generated
 .resolved-prompt-*
