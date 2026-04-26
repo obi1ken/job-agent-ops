@@ -43,6 +43,8 @@ extensions/orchestrator/.lock
 .resolved-prompt-*
 node_modules/
 bun.lock
+__pycache__/
+*.pyc
 
 # OS
 .DS_Store
