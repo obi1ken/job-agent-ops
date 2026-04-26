@@ -26,3 +26,17 @@ synthesis: Running list of ambiguities and pending decisions requiring Charles's
 - **OQ-5 Adzuna API keys**: Adzuna queries disabled in portals.yml until ADZUNA_APP_ID and ADZUNA_API_KEY are configured in .env.
 - **OQ-6 SerpAPI key**: SerpAPI queries disabled until SERPAPI_KEY is configured in .env.
 - **OQ-7 Location for Track C**: Assumed "Reading UK base, will commute UK-wide for site-based roles." Confirm this is correct.
+
+## Activation Prerequisites (Phase 3 blockers)
+
+These items block the first live run. Code is complete; configuration is not.
+
+- **AP-1 Gmail address**: `GMAIL_ADDRESS` in `.env` is still placeholder. Set to actual Gmail account.
+- **AP-2 Gmail API credentials**: `credentials.json` does not exist. One-time setup required:
+  Google Cloud Console → APIs & Services → enable Gmail API → Credentials → OAuth 2.0 Client ID (Desktop)
+  → Download JSON → save as `extensions/email_monitor/credentials.json`.
+  On first orchestrator run, a browser window will open for OAuth consent.
+- **AP-3 Adzuna API keys**: `ADZUNA_APP_ID` and `ADZUNA_API_KEY` are placeholders.
+  Register free account at https://developer.adzuna.com/ (250 calls/month free tier).
+- **AP-4 SerpAPI key**: `SERPAPI_KEY` is placeholder.
+  Register free account at https://serpapi.com/ (100 searches/month free tier).

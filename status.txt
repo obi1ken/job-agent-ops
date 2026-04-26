@@ -1,106 +1,98 @@
 # Job Agent Ops — Status
-# Updated: 2026-04-24
-# Phase 1: COMPLETE (3 commits on feat/phase-1-foundation)
+# Updated: 2026-04-26
+# Phase 1: COMPLETE | Phase 2: COMPLETE | Phase 3: NEXT
 
 ==============================================================
-1. PHASE 1 — COMPLETED
+1. PHASE 1 — COMPLETE
 ==============================================================
 
 All items shipped across 3 commits on feat/phase-1-foundation.
+See git log for full detail.
 
-COMMIT 1 — Phase 1 foundation
-  config/profile.yml         — Charles's profile, 4 tracks, thresholds, portal mapping
-  modes/_profile.md          — canonical 4-track rules, proof points, archetypes
-  portals.yml                — UK-curated (6 portals + Adzuna/SerpAPI + 20 companies)
-  data/applications.md       — tracker initialised, correct headers
-  data/pipeline.md           — URL inbox initialised
-  WIKI.md                    — schema and governance rules
-  raw/                       — seeded (cv.md, article-digest.md, instructions.md)
-  wiki/hot.md, index.md, log.md
-  wiki/pages/                — 13 stub pages
-  .claude/skills/            — 4 skill files
-  .claude/commands/          — 5 command files
-  .claude/agents/            — 6 agent files
-  .claude/hooks/             — 2 hook files (.md only — Windows rule)
-  .claude/settings.json
-  CLAUDE.md                  — full 8-section rewrite
-  Discord_Bot_Setup_Guide.txt committed
-
-COMMIT 2 — Corrections: Gmail, OQ-3/OQ-4 resolved
-  .claude/agents/email-monitor-agent.md  — Hotmail → Gmail
-  wiki/pages/email-monitor.md            — Hotmail → Gmail
-  wiki/pages/open-questions.md           — OQ-3 resolved (Gmail confirmed)
-                                         — OQ-4 resolved (guide now in project)
-
-COMMIT 3 — Naming corrections
-  CLAUDE.md                              — career-bot → job-agent-ops-bot (x4)
-                                         — #career-ops-build → #job-agent-ops-build
-                                         — server → miclaud
-                                         — Upstream/Hotmail/career-ops cleanup
-  config/profile.yml                     — career-ops → project-neutral language (x2)
-  modes/_profile.md                      — career-ops → project-neutral language (x2)
-  wiki/hot.md                            — bot/channel/server corrections + updated state
-  wiki/index.md                          — career-bot → job-agent-ops-bot
-  wiki/pages/discord-integration.md      — bot/channel/server corrections throughout
-  wiki/pages/system-overview.md          — removed duplicate "fork of career-ops" ref
-  .claude/agents/email-monitor-agent.md  — obryann@hotmail.com → Gmail account
+Key deliverables:
+  config/profile.yml, modes/_profile.md, portals.yml
+  data/applications.md, data/pipeline.md
+  wiki/ (13 pages), .claude/skills/, .claude/commands/
+  CLAUDE.md (full 8-section rewrite)
+  Discord_Bot_Setup_Guide.txt
 
 ==============================================================
-2. OPEN DECISIONS STILL LIVE
+2. PHASE 2 — COMPLETE (2026-04-26)
 ==============================================================
 
-OQ-1  LinkedIn URL — profile placeholder. Update when LinkedIn profile ready.
+All 7 extensions + orchestrator built on feat/phase-2-discord.
+PR open, ready to merge to main.
+
+STEP 1 — Discord bot — COMPLETE (2026-04-24)
+  Bot: job-agent-ops-bot | Server: miclaud | Channel: #job-agent-ops-build
+  Channel ID: 1497217102531264653
+  Batch file: C:\Users\obrya\start-job-agent-ops.bat
+
+STEP 2 — Extensions — ALL COMPLETE (2026-04-25 / 2026-04-26)
+  extensions/notifications/     Discord client, 7 event types, embed templates
+  extensions/email_monitor/     Gmail API (OAuth2), 5-class classifier, tracker updater
+  extensions/job_discovery/     Adzuna API + SerpAPI Google Jobs adapters
+  extensions/cv_diff/           Section-level diff, EDMS detection, keywords_injected/removed
+  extensions/quota_manager/     5hr rolling window, 22k limit (25% of 88k Max plan)
+  extensions/interview_prep/    PrepBuilder, 4-embed Discord delivery, no Anthropic API
+  extensions/deadline_manager/  Follow-up scheduler (7d), GHOST detection (14d), interview countdown
+  orchestrator.py               8-phase tick loop, AI bridge, approval flow
+  requirements.txt              requests, google-auth, google-auth-oauthlib,
+                                google-api-python-client, pyyaml
+
+Key architectural decisions:
+  - No Anthropic API calls — Claude Code IS the AI (prompt files in ai_outbox/, results in ai_inbox/)
+  - Exactly-once Discord inbox: byte-offset + message_id dedup, atomic state save
+  - Human-in-loop NON-NEGOTIABLE: nothing submitted without Charles's explicit Discord approval
+  - One tick per orchestrator.py invocation (cron-safe, lockfile prevents concurrent runs)
+  - applications.md read-only for all extensions except email_monitor + submission.py
+
+==============================================================
+3. ACTIVATION PREREQUISITES (system is code-complete but cannot run)
+==============================================================
+
+  AP-1  Gmail address — GMAIL_ADDRESS in .env is still placeholder
+        Action: set GMAIL_ADDRESS=your_gmail_address@gmail.com in .env
+
+  AP-2  Gmail API credentials — credentials.json does not exist
+        Action: Google Cloud Console → APIs & Services → enable Gmail API
+                → Credentials → OAuth 2.0 Client ID → Desktop app
+                → Download JSON → save as extensions/email_monitor/credentials.json
+                → run python orchestrator.py (triggers browser auth on first Gmail poll)
+
+  AP-3  Adzuna API keys — ADZUNA_APP_ID and ADZUNA_API_KEY are placeholders
+        Action: https://developer.adzuna.com/ → register free account
+                → add ADZUNA_APP_ID and ADZUNA_API_KEY to .env
+
+  AP-4  SerpAPI key — SERPAPI_KEY is placeholder
+        Action: https://serpapi.com/ → register free account (100 searches/month)
+                → add SERPAPI_KEY to .env
+
+==============================================================
+4. PHASE 3 — NEXT: TESTING AND ACTIVATION
+==============================================================
+
+  STEP 1: Complete all 4 Activation Prerequisites above
+  STEP 2: First live run — python orchestrator.py --verbose
+  STEP 3: Add first JD URL to data/pipeline.md
+  STEP 4: Verify full flow end-to-end:
+            discovery → score → tailor CV → cover letter → Discord approval
+  STEP 5: Charles approves in Discord → verify submission logs to applications.md
+  STEP 6: Verify GHOST detection fires after 14 days no response (test with short window)
+  STEP 7: Verify interview countdown fires 24h before interview date
+
+==============================================================
+5. OPEN DECISIONS STILL LIVE
+==============================================================
+
+OQ-1  LinkedIn URL — placeholder. Update when LinkedIn profile ready.
 OQ-2  Compensation — £45k–£70k assumed. Charles to confirm or adjust.
-OQ-5  Adzuna API keys — disabled in portals.yml until ADZUNA_APP_ID + ADZUNA_API_KEY in .env.
-OQ-6  SerpAPI key — disabled until SERPAPI_KEY in .env.
 OQ-7  Location for Track C — "Reading UK base, will commute UK-wide" assumed. Confirm.
 
 D2/D3 DATA_CONTRACT tension — CLAUDE.md and .claude/skills/* listed as System Layer.
-      Risk: future update-system.mjs apply may overwrite. Logged in risks-incidents.md.
       Action: always diff CLAUDE.md before running update-system.mjs apply.
 
-D4    applications.md schema differs from merge-tracker.mjs. Intentional. Will be
-      superseded by extensions/. Logged in risks-incidents.md as R3.
-
-==============================================================
-3. PHASE 2 — IN PROGRESS
-==============================================================
-
-STEP 1 — Discord bot setup — COMPLETE (2026-04-24)
-  - Bot live: job-agent-ops-bot on miclaud server, #job-agent-ops-build
-  - Channel ID confirmed: 1497217102531264653
-  - Batch file: C:\Users\obrya\start-job-agent-ops.bat
-  - State dir: C:\Users\obrya\.claude\channels\discord-job-agent-ops\
-  - settings.local.json structure documented in Discord_Bot_Setup_Guide.txt
-  STILL TODO:
-  - Update access.json: replace YOUR_CHANNEL_ID with 1497217102531264653
-  - Update CLAUDE.md section 4: remove "reference only" label, add confirmed channel ID
-  - Update wiki/pages/discord-integration.md status: planned → current
-  - Commit on feat/phase-2-discord
-
-STEP 2 — Build extensions/ folder
-  extensions/notifications/       Discord client, event types, embed templates
-  extensions/email_monitor/        Gmail API (OAuth), classifier, tracker updater
-  extensions/quota_manager/        5hr rolling window, batch throttle, priority queue
-  extensions/interview_prep/       auto-trigger, prep pack generator, Discord delivery
-  extensions/cv_diff/              master vs tailored diff, EDMS detection for Track D
-  extensions/deadline_manager/     follow-up scheduler, interview countdown, state machine
-  extensions/job_discovery/        Adzuna API + SerpAPI Google Jobs adapters
-  orchestrator.py
-  requirements.txt
-  .env (gitignored — add API keys here)
-
-STEP 3 — First live run
-  - Add first JD URL to data/pipeline.md
-  - Run /career-ops pipeline
-  - Verify score, track selection, CV diff, cover letter, Discord approval flow
-  - Submit only after Charles approves in Discord
-
-==============================================================
-FIRST CONCRETE ACTION ON PHASE 2 RESUME
-==============================================================
-
-Read wiki/hot.md → confirm bot/channel details → execute STEP 1 Discord setup.
-Full procedure: Discord_Bot_Setup_Guide.txt (project root).
+D4    applications.md schema differs from merge-tracker.mjs. Intentional.
+      Will be superseded by extensions/. Logged in risks-incidents.md as R3.
 
 END OF STATUS

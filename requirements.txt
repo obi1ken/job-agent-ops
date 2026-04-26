@@ -1,0 +1,14 @@
+# Job Agent Ops — Python dependencies
+# Install: pip install -r requirements.txt
+# Python 3.11+
+
+# HTTP client (Discord REST, Adzuna API, SerpAPI)
+requests>=2.31.0
+
+# Gmail API (OAuth2 + Gmail REST)
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-api-python-client>=2.100.0
+
+# YAML config parsing (config/profile.yml, portals.yml)
+pyyaml>=6.0.1
