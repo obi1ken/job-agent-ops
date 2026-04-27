@@ -1,7 +1,7 @@
 # Personal data (user fills these)
-cv.md
-data/applications.md
-data/pipeline.md
+# NOTE: This is a personal fork — user-layer files ARE committed here.
+# cv.md and data/ files intentionally tracked.
+# data/scan-history.tsv excluded (auto-generated, large)
 data/scan-history.tsv
 reports/*.md
 !reports/.gitkeep
@@ -17,19 +17,34 @@ jds/*
 !jds/.gitkeep
 
 # User config and customization (never auto-updated)
-config/profile.yml
-portals.yml
-modes/_profile.md
+# NOTE: Personal fork — these ARE committed intentionally.
+# config/profile.yml, portals.yml, modes/_profile.md tracked here.
 .update-dismissed
 .update-lock
 
 # Secrets (never commit — use .env.example as template)
 .env
+extensions/email_monitor/credentials.json
+extensions/email_monitor/token.json
+extensions/email_monitor/poll_state.json
+extensions/job_discovery/discovery_state.json
+extensions/quota_manager/quota_state.json
+
+# Orchestrator runtime state (generated, sensitive)
+extensions/orchestrator/pending_approvals.json
+extensions/orchestrator/ai_tasks.json
+extensions/orchestrator/discord_inbox.jsonl
+extensions/orchestrator/discord_inbox_state.json
+extensions/orchestrator/ai_outbox/
+extensions/orchestrator/ai_inbox/
+extensions/orchestrator/.lock
 
 # Generated
 .resolved-prompt-*
 node_modules/
 bun.lock
+__pycache__/
+*.pyc
 
 # OS
 .DS_Store

@@ -1,0 +1,98 @@
+# Job Agent Ops — Status
+# Updated: 2026-04-26
+# Phase 1: COMPLETE | Phase 2: COMPLETE | Phase 3: NEXT
+
+==============================================================
+1. PHASE 1 — COMPLETE
+==============================================================
+
+All items shipped across 3 commits on feat/phase-1-foundation.
+See git log for full detail.
+
+Key deliverables:
+  config/profile.yml, modes/_profile.md, portals.yml
+  data/applications.md, data/pipeline.md
+  wiki/ (13 pages), .claude/skills/, .claude/commands/
+  CLAUDE.md (full 8-section rewrite)
+  Discord_Bot_Setup_Guide.txt
+
+==============================================================
+2. PHASE 2 — COMPLETE (2026-04-26)
+==============================================================
+
+All 7 extensions + orchestrator built on feat/phase-2-discord.
+PR open, ready to merge to main.
+
+STEP 1 — Discord bot — COMPLETE (2026-04-24)
+  Bot: job-agent-ops-bot | Server: miclaud | Channel: #job-agent-ops-build
+  Channel ID: 1497217102531264653
+  Batch file: C:\Users\obrya\start-job-agent-ops.bat
+
+STEP 2 — Extensions — ALL COMPLETE (2026-04-25 / 2026-04-26)
+  extensions/notifications/     Discord client, 7 event types, embed templates
+  extensions/email_monitor/     Gmail API (OAuth2), 5-class classifier, tracker updater
+  extensions/job_discovery/     Adzuna API + SerpAPI Google Jobs adapters
+  extensions/cv_diff/           Section-level diff, EDMS detection, keywords_injected/removed
+  extensions/quota_manager/     5hr rolling window, 22k limit (25% of 88k Max plan)
+  extensions/interview_prep/    PrepBuilder, 4-embed Discord delivery, no Anthropic API
+  extensions/deadline_manager/  Follow-up scheduler (7d), GHOST detection (14d), interview countdown
+  orchestrator.py               8-phase tick loop, AI bridge, approval flow
+  requirements.txt              requests, google-auth, google-auth-oauthlib,
+                                google-api-python-client, pyyaml
+
+Key architectural decisions:
+  - No Anthropic API calls — Claude Code IS the AI (prompt files in ai_outbox/, results in ai_inbox/)
+  - Exactly-once Discord inbox: byte-offset + message_id dedup, atomic state save
+  - Human-in-loop NON-NEGOTIABLE: nothing submitted without Charles's explicit Discord approval
+  - One tick per orchestrator.py invocation (cron-safe, lockfile prevents concurrent runs)
+  - applications.md read-only for all extensions except email_monitor + submission.py
+
+==============================================================
+3. ACTIVATION PREREQUISITES (system is code-complete but cannot run)
+==============================================================
+
+  AP-1  Gmail address — GMAIL_ADDRESS in .env is still placeholder
+        Action: set GMAIL_ADDRESS=your_gmail_address@gmail.com in .env
+
+  AP-2  Gmail API credentials — credentials.json does not exist
+        Action: Google Cloud Console → APIs & Services → enable Gmail API
+                → Credentials → OAuth 2.0 Client ID → Desktop app
+                → Download JSON → save as extensions/email_monitor/credentials.json
+                → run python orchestrator.py (triggers browser auth on first Gmail poll)
+
+  AP-3  Adzuna API keys — ADZUNA_APP_ID and ADZUNA_API_KEY are placeholders
+        Action: https://developer.adzuna.com/ → register free account
+                → add ADZUNA_APP_ID and ADZUNA_API_KEY to .env
+
+  AP-4  SerpAPI key — SERPAPI_KEY is placeholder
+        Action: https://serpapi.com/ → register free account (100 searches/month)
+                → add SERPAPI_KEY to .env
+
+==============================================================
+4. PHASE 3 — NEXT: TESTING AND ACTIVATION
+==============================================================
+
+  STEP 1: Complete all 4 Activation Prerequisites above
+  STEP 2: First live run — python orchestrator.py --verbose
+  STEP 3: Add first JD URL to data/pipeline.md
+  STEP 4: Verify full flow end-to-end:
+            discovery → score → tailor CV → cover letter → Discord approval
+  STEP 5: Charles approves in Discord → verify submission logs to applications.md
+  STEP 6: Verify GHOST detection fires after 14 days no response (test with short window)
+  STEP 7: Verify interview countdown fires 24h before interview date
+
+==============================================================
+5. OPEN DECISIONS STILL LIVE
+==============================================================
+
+OQ-1  LinkedIn URL — placeholder. Update when LinkedIn profile ready.
+OQ-2  Compensation — £45k–£70k assumed. Charles to confirm or adjust.
+OQ-7  Location for Track C — "Reading UK base, will commute UK-wide" assumed. Confirm.
+
+D2/D3 DATA_CONTRACT tension — CLAUDE.md and .claude/skills/* listed as System Layer.
+      Action: always diff CLAUDE.md before running update-system.mjs apply.
+
+D4    applications.md schema differs from merge-tracker.mjs. Intentional.
+      Will be superseded by extensions/. Logged in risks-incidents.md as R3.
+
+END OF STATUS

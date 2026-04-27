@@ -1,0 +1,71 @@
+import logging
+import os
+
+from .adzuna_client import AdzunaClient, AdzunaError
+from .config_loader import ConfigError, get_enabled_queries, get_title_filter, load_portals_config
+from .discovery_state import DiscoveryState
+from .models import JobListing
+from .serpapi_client import SerpApiClient, SerpApiError
+
+log = logging.getLogger(__name__)
+
+_DEFAULT_STATE_PATH = "extensions/job_discovery/discovery_state.json"
+
+
+class JobDiscoveryError(Exception):
+    pass
+
+
+class JobDiscovery:
+    def __init__(self, portals_yml_path: str, state_path: str = _DEFAULT_STATE_PATH):
+        try:
+            self._config = load_portals_config(portals_yml_path)
+        except ConfigError as exc:
+            raise JobDiscoveryError(str(exc)) from exc
+        self._title_filter = get_title_filter(self._config)
+        self._state = DiscoveryState(
+            os.environ.get("DISCOVERY_STATE_PATH", state_path)
+        )
+
+    def run(self) -> list[JobListing]:
+        all_listings: list[JobListing] = []
+
+        # Adzuna
+        adzuna_queries = get_enabled_queries(self._config, "adzuna")
+        if adzuna_queries:
+            try:
+                client = AdzunaClient()
+                all_listings.extend(self._run_source("adzuna", client, adzuna_queries))
+            except (KeyError, AdzunaError) as exc:
+                log.error("Adzuna source failed: %s", exc)
+
+        # SerpAPI
+        serpapi_queries = get_enabled_queries(self._config, "serpapi")
+        if serpapi_queries:
+            try:
+                client = SerpApiClient()
+                all_listings.extend(self._run_source("serpapi", client, serpapi_queries))
+            except (KeyError, SerpApiError) as exc:
+                log.error("SerpAPI source failed: %s", exc)
+
+        self._state.prune()
+        self._state.save()
+        log.info("job_discovery: %d new listings found", len(all_listings))
+        return all_listings
+
+    def _run_source(self, source: str, client, queries: list[dict]) -> list[JobListing]:
+        new_listings: list[JobListing] = []
+        for query_cfg in queries:
+            query = query_cfg.get("query", "")
+            log.debug("Fetching %s: %s", source, query_cfg.get("name", query[:40]))
+            try:
+                results = client.fetch(query, self._title_filter)
+            except (AdzunaError, SerpApiError) as exc:
+                log.error("Query '%s' failed: %s", query_cfg.get("name", ""), exc)
+                continue
+            for listing in results:
+                if self._state.is_seen(source, listing.external_id):
+                    continue
+                self._state.mark_seen(source, listing.external_id)
+                new_listings.append(listing)
+        return new_listings

@@ -1,0 +1,164 @@
+# Career-Ops Profile Configuration — Charles Asiegbu
+# Generated: 2026-04-24
+# DO NOT edit config/profile.example.yml — edit this file only.
+
+candidate:
+  full_name: "Charles Asiegbu"
+  email: "obryann@hotmail.com"
+  phone: "07932028706"
+  location: "Reading, UK"
+  linkedin: ""                        # to be added when LinkedIn profile is ready
+  github: "github.com/obi1ken"
+  portfolio_url: ""                   # no public portfolio URL yet
+  twitter: ""
+
+target_roles:
+  # Four tracks — scored against every JD. Highest score wins.
+  tracks:
+    - id: A
+      label: "Engineering"
+      primary_roles:
+        - "AI Agent Engineer"
+        - "AI Infrastructure Engineer"
+        - "MLOps Engineer"
+        - "Founding Engineer"
+        - "Autonomous Systems Engineer"
+      primary_portals: ["CWJobs", "Indeed"]
+      cv_section_header: "AI Systems Portfolio"
+      profile_block: "Engineering Focus"
+
+    - id: B
+      label: "Product & Leadership"
+      primary_roles:
+        - "Technical Product Manager"
+        - "AI Product Manager"
+        - "Head of AI"
+        - "Solutions Engineer"
+        - "AI Delivery Lead"
+      primary_portals: ["LinkedIn", "Indeed"]
+      cv_section_header: "Independent AI Projects"
+      profile_block: "Product & Leadership Focus"
+
+    - id: C
+      label: "Rail/Civils Digital"
+      primary_roles:
+        - "Digital Transformation Project Manager"
+        - "AI Implementation Consultant"
+        - "Safety Technology Consultant"
+        - "BIM Digital Project Manager"
+        - "Technology Advisory (rail/civils)"
+      primary_portals: ["Totaljobs", "RailwayPeople", "Indeed"]
+      cv_section_header: "Independent AI Projects"
+      profile_block: "Rail/Civils Digital Transformation"
+
+    - id: D
+      label: "Document Control"
+      primary_roles:
+        - "Document Controller"
+        - "Senior Document Controller"
+        - "Information Manager"
+        - "Digital Information Manager"
+        - "BIM Information Manager"
+      primary_portals: ["Reed", "Indeed"]
+      cv_section_header: "Independent Projects"
+      profile_block: "Document Control & Information Management"
+
+  archetypes:
+    # Archetypes — serve Tracks A and B
+    - name: "AI Platform / LLMOps Engineer"
+      fit: "primary"
+      tracks: [A]
+    - name: "Agentic Workflows / Automation"
+      fit: "primary"
+      tracks: [A, B]
+    - name: "Technical AI Product Manager"
+      fit: "primary"
+      tracks: [B]
+    - name: "AI Solutions Architect"
+      fit: "secondary"
+      tracks: [A, B]
+    - name: "AI Forward Deployed Engineer"
+      fit: "secondary"
+      tracks: [A, B]
+    - name: "AI Transformation Lead"
+      fit: "secondary"
+      tracks: [B]
+    # New archetypes — serve Tracks C and D
+    - name: "Rail/Civils Digital Transformation"
+      fit: "primary"
+      tracks: [C]
+    - name: "Non-Software Engineering"
+      fit: "primary"
+      tracks: [C, D]
+    - name: "Operations / Safety-Critical"
+      fit: "primary"
+      tracks: [C]
+    - name: "Document Control / Information Management"
+      fit: "primary"
+      tracks: [D]
+
+narrative:
+  headline: "AI systems engineer and technical product leader — 20 years across product, data analytics, and autonomous systems"
+  exit_story: >
+    Spent three years in safety-critical rail operations (COSS/PC) while
+    independently building three production AI systems from scratch. Now
+    returning to full-time tech, bringing disciplined risk thinking, 20
+    years of product and delivery experience, and hands-on autonomous
+    agent engineering depth.
+  superpowers:
+    - "Production AI systems built end-to-end, solo, from scratch"
+    - "Risk-governed execution design (7-check governor, gated phases)"
+    - "Operational rail experience no pure-tech candidate has"
+    - "20 years stakeholder management at senior level"
+    - "Certified document controller with AI automation advantage"
+  proof_points:
+    - name: "MT5 Autonomous Trading Agent"
+      hero_metric: "7-check Portfolio Risk Governor in production"
+    - name: "Lobi Eco Agent"
+      hero_metric: "6-agent autonomous Amazon FBA system"
+    - name: "costfeed.co"
+      hero_metric: "Full CI/CD + Playwright E2E on Vercel"
+    - name: "Tavistock & Portman NHS"
+      hero_metric: "Digital archive delivered end-to-end, records to National Archives"
+    - name: "Quintech Media Solutions"
+      hero_metric: "7 major global brands delivered over 3 years"
+
+compensation:
+  target_range: "£45,000–£70,000"
+  currency: "GBP"
+  minimum: "£40,000"
+  location_flexibility: >
+    Reading UK base. Remote preferred. Will commute UK-wide for
+    site-based rail/civils roles. Open to hybrid in London/South East.
+
+location:
+  country: "United Kingdom"
+  city: "Reading"
+  timezone: "GMT/BST"
+  visa_status: "No sponsorship needed"
+  onsite_availability: "UK-wide for Track C/D site-based roles"
+
+scoring_thresholds:
+  default_apply: 3.5
+  track_D_apply: 3.0        # lower threshold — direct Consepsys cert match
+  priority_flag: 4.0        # flag as priority
+  urgent_flag: 4.5          # urgent — Discord ping in Phase 2
+  track_C_note: >
+    Score generously where COSS, PC, operational rail experience, or
+    Network Rail standards are mentioned in the JD. This combination
+    of credentials is rare in the candidate market.
+
+portal_profile_mapping:
+  # Profile stored on each portal (upload once, static)
+  LinkedIn:   { track: B, reason: "95% UK recruiters, senior/PM/product roles dominate" }
+  Indeed:     { track: B, reason: "Most versatile, widest audience; apply track overrides per application" }
+  Reed:       { track: D, reason: "Strong rail/civils/construction, agency-backed quality leads" }
+  Totaljobs:  { track: C, reason: "Infrastructure and engineering, 21M CV database" }
+  CWJobs:     { track: A, reason: "IT/tech niche specialist, 45% better conversion for tech roles" }
+  RailwayPeople: { track: C, reason: "Specialist rail only, domain roles exclusively" }
+  # Search-only sources — no profile stored
+  Adzuna:     { stored_profile: false, note: "API aggregates 100+ UK boards. Filter: UK, full-time, salary > £35,000" }
+  GoogleJobs: { stored_profile: false, note: "Via SerpAPI. Catches direct company postings not on major boards" }
+
+language:
+  modes_dir: "modes"          # default English; change to modes/de or modes/fr if needed
