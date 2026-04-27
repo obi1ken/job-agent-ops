@@ -144,7 +144,7 @@ class Orchestrator:
         for r in results:
             if r.get("email_class") == "INTERVIEW_INVITE":
                 self._queue_interview_prep(
-                    company=r.get("company_matched", "Unknown"),
+                    company=r.get("company_matched") or "Unknown",
                     role=r.get("subject", "")[:60],
                     track="A",  # orchestrator doesn't know track from email alone — default A
                     jd_text="",

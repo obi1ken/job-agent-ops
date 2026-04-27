@@ -66,21 +66,23 @@ class EmailMonitor:
             log.error("Tracker update failed for %s: %s — message left unread for retry", message_id, exc)
             return None
 
-        company = matched_company or "Unknown"
         role = ""  # role not extractable from email alone
 
-        notified = True
-        try:
-            dispatch_notification(
-                email_class=email_class,
-                company=company,
-                role=role,
-                subject=message["subject"],
-                email_date=message["date"],
-            )
-        except DiscordNotificationError as exc:
-            log.error("Discord notification failed for %s: %s", message_id, exc)
-            notified = False
+        notified = False
+        if matched_company is not None:
+            try:
+                dispatch_notification(
+                    email_class=email_class,
+                    company=matched_company,
+                    role=role,
+                    subject=message["subject"],
+                    email_date=message["date"],
+                )
+                notified = True
+            except DiscordNotificationError as exc:
+                log.error("Discord notification failed for %s: %s", message_id, exc)
+        else:
+            log.debug("No application match for email %s — skipping notification", message_id)
 
         self._state.mark_processed(message_id)
         try:

@@ -23,6 +23,22 @@ _LOCK_FILE = Path("extensions/orchestrator/.lock")
 _VALID_STEPS = {"email", "deadlines", "discovery", "approvals", "prep", "quota_flush"}
 
 
+def _load_dotenv(path: str = ".env") -> None:
+    """Load key=value pairs from .env into os.environ (existing vars are not overwritten)."""
+    p = Path(path)
+    if not p.exists():
+        return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip()
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
 def _acquire_lock() -> bool:
     """Simple file-based lock to prevent concurrent ticks."""
     try:
@@ -49,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true", help="No Discord sends or file writes")
     parser.add_argument("--verbose", action="store_true", help="Debug logging")
     args = parser.parse_args(argv)
+
+    _load_dotenv()
 
     level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(
