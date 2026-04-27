@@ -333,7 +333,8 @@ class Orchestrator:
     def _save_jd(self, listing: JobListing, config: ProfileConfig) -> str:
         import re as _re
         safe = _re.sub(r"[^\w]", "_", listing.company)[:20]
-        filename = f"{listing.external_id[:12]}_{safe}.txt"
+        safe_id = _re.sub(r"[^\w\-]", "_", listing.external_id)[:12]
+        filename = f"{safe_id}_{safe}.txt"
         path = config.jds_dir / filename
         config.jds_dir.mkdir(parents=True, exist_ok=True)
         path.write_text(
