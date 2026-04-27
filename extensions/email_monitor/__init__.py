@@ -22,6 +22,7 @@ class EmailMonitor:
         self._state = PollState(state_dir)
         self._tracker = TrackerUpdater(os.path.join(data_dir, "data", "applications.md"))
         self._max_results = int(os.environ.get("GMAIL_POLL_MAX_RESULTS", "50"))
+        self._label = os.environ.get("GMAIL_LABEL", "")
 
     def authenticate(self) -> None:
         self._gmail.authenticate()
@@ -29,7 +30,7 @@ class EmailMonitor:
     def poll(self) -> list[dict]:
         results = []
         try:
-            messages = self._gmail.list_unread_messages(max_results=self._max_results)
+            messages = self._gmail.list_unread_messages(max_results=self._max_results, label=self._label)
         except Exception as exc:
             raise EmailMonitorError(f"Gmail list failed: {exc}") from exc
 
