@@ -152,22 +152,39 @@ search_queries:
     query: 'site:railwaypeople.com "COSS" OR "Protection Controller" OR "Site Safety" OR "Possession" OR "Safety Manager"'
     enabled: true
 
-  # -- Adzuna (search-only, no profile — API key required) --
-  # Configure ADZUNA_APP_ID and ADZUNA_API_KEY in .env
-  - name: Adzuna — All tracks UK
-    query: 'AI Engineer OR Document Controller OR Digital Transformation OR "Product Manager" UK full-time'
-    enabled: false   # enable once Adzuna API keys configured in .env
-    notes: "Aggregates 100+ UK boards. Filter: UK, full-time, salary > £35,000."
+  # -- Adzuna API — 4 per-track queries (Reading, 50km radius) --
+  - name: Adzuna — Track A Engineering/AI
+    query: 'AI engineer OR MLOps engineer OR autonomous systems engineer OR founding engineer AI'
+    enabled: true
 
-  # -- Google Jobs via SerpAPI (search-only, no profile) --
-  # Configure SERPAPI_KEY in .env
-  - name: SerpAPI Google Jobs — Track A Engineering
-    query: '"AI Agent Engineer" OR "Founding Engineer" OR "AI Infrastructure" UK'
-    enabled: false   # enable once SERPAPI_KEY configured in .env
+  - name: Adzuna — Track B Product/Leadership
+    query: 'technical product manager AI OR AI product manager OR head of AI'
+    enabled: true
 
-  - name: SerpAPI Google Jobs — Track C Rail Digital
-    query: '"Digital Railway" OR "Rail Technology" OR "BIM Digital" "Project Manager" OR "Consultant" UK'
-    enabled: false
+  - name: Adzuna — Track C Rail/Civils Digital
+    query: 'digital transformation rail OR BIM manager rail OR technology manager infrastructure OR AI consultant construction'
+    enabled: true
+
+  - name: Adzuna — Track D Document Control
+    query: 'document controller OR senior document controller OR information manager construction OR BIM information manager'
+    enabled: true
+
+  # -- Google Jobs via SerpAPI — 4 per-track queries (UK-wide) --
+  - name: SerpAPI Google Jobs — Track A Engineering/AI
+    query: '"AI engineer" OR "MLOps engineer" OR "autonomous systems engineer" OR "founding engineer AI"'
+    enabled: true
+
+  - name: SerpAPI Google Jobs — Track B Product/Leadership
+    query: '"technical product manager AI" OR "AI product manager" OR "head of AI"'
+    enabled: true
+
+  - name: SerpAPI Google Jobs — Track C Rail/Civils Digital
+    query: '"digital transformation rail" OR "BIM manager rail" OR "technology manager infrastructure" OR "AI consultant construction"'
+    enabled: true
+
+  - name: SerpAPI Google Jobs — Track D Document Control
+    query: '"document controller" OR "senior document controller" OR "information manager construction" OR "BIM information manager"'
+    enabled: true
 
   # -- Greenhouse / Ashby / Lever — direct ATS searches --
   - name: Greenhouse — AI Engineer UK/EU
