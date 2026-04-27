@@ -35,12 +35,13 @@ class GmailClient:
             token_file.write_text(creds.to_json())
         self._service = build("gmail", "v1", credentials=creds)
 
-    def list_unread_messages(self, max_results: int = 50) -> list[dict]:
+    def list_unread_messages(self, max_results: int = 50, label: str = "") -> list[dict]:
         self._require_auth()
+        query = f"is:unread label:{label}" if label else "is:unread in:inbox"
         resp = (
             self._service.users()
             .messages()
-            .list(userId="me", q="is:unread in:inbox", maxResults=max_results)
+            .list(userId="me", q=query, maxResults=max_results)
             .execute()
         )
         return resp.get("messages", [])
