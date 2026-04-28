@@ -1,5 +1,5 @@
 # Charles Asiegbu
-Reading, UK | [07932028706] | [obryann@hotmail.com] | [LinkedIn - to be added]
+Reading, UK | [07932028706] | [miclaud04@gmail.com] | [LinkedIn - to be added]
 
 ---
 
@@ -293,8 +293,8 @@ Doc Control roles: label as "Independent Projects" -->
   end clients across survey and data campaigns
 
 ### Controller of Site Safety / Protection Controller
-**Vital Rail UK | March 2022 – Present**
-**YFL Rail | November 2021 – February 2022**
+**Vital Rail UK | YFL Rail | MatchTech Solutions | Morgan Sindall**
+**November 2018 – Present**
 
 - Managed safety-critical operations across
   mainline rail routes under Network Rail

@@ -48,25 +48,13 @@ Key architectural decisions:
   - applications.md read-only for all extensions except email_monitor + submission.py
 
 ==============================================================
-3. ACTIVATION PREREQUISITES (system is code-complete but cannot run)
+3. ACTIVATION PREREQUISITES — ALL COMPLETE (2026-04-27)
 ==============================================================
 
-  AP-1  Gmail address — GMAIL_ADDRESS in .env is still placeholder
-        Action: set GMAIL_ADDRESS=your_gmail_address@gmail.com in .env
-
-  AP-2  Gmail API credentials — credentials.json does not exist
-        Action: Google Cloud Console → APIs & Services → enable Gmail API
-                → Credentials → OAuth 2.0 Client ID → Desktop app
-                → Download JSON → save as extensions/email_monitor/credentials.json
-                → run python orchestrator.py (triggers browser auth on first Gmail poll)
-
-  AP-3  Adzuna API keys — ADZUNA_APP_ID and ADZUNA_API_KEY are placeholders
-        Action: https://developer.adzuna.com/ → register free account
-                → add ADZUNA_APP_ID and ADZUNA_API_KEY to .env
-
-  AP-4  SerpAPI key — SERPAPI_KEY is placeholder
-        Action: https://serpapi.com/ → register free account (100 searches/month)
-                → add SERPAPI_KEY to .env
+  AP-1  GMAIL_ADDRESS=miclaud04@gmail.com                    DONE
+  AP-2  credentials.json saved, OAuth consent completed      DONE
+  AP-3  ADZUNA_APP_ID + ADZUNA_API_KEY set in .env           DONE
+  AP-4  SERPAPI_KEY set in .env                              DONE
 
 ==============================================================
 4. PHASE 3 — NEXT: TESTING AND ACTIVATION

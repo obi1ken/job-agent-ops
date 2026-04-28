@@ -55,6 +55,13 @@ De-emphasise:
 
 CV section header: "AI Systems Portfolio"
 
+Certifications: AZ-900 + SC-900 only. No rail certs, no Consepsys, no SMSTS, no OCR, no BTEC.
+
+Rail role: ONE LINE only — no bullets.
+`Controller of Site Safety / Protection Controller | Vital Rail UK (and others) | November 2018 – Present`
+
+Section order: Profile → Core Skills → Certifications → AI Systems Portfolio → Experience (GoCollate, Quintech, Tavistock, iConcepts, rail one-liner) → Education
+
 Keywords to inject from JD:
 autonomous agents, multi-agent systems,
 LLM integration, Python, AI infrastructure,
@@ -103,6 +110,13 @@ De-emphasise:
 
 CV section header: "Independent AI Projects"
 
+Certifications: AZ-900 + SC-900 only. No rail certs, no Consepsys, no SMSTS, no OCR, no BTEC.
+
+Rail role: ONE LINE only — no bullets.
+`Controller of Site Safety / Protection Controller | Vital Rail UK (and others) | November 2018 – Present`
+
+Section order: Profile → Core Skills → Certifications → Independent AI Projects → Experience (GoCollate, Quintech, Tavistock, iConcepts, rail one-liner) → Education
+
 Keywords to inject from JD:
 product roadmap, stakeholder management,
 AI product strategy, go-to-market,
@@ -147,6 +161,12 @@ De-emphasise:
 * Document control specifics
 
 CV section header: "Independent AI Projects"
+
+Certifications: AZ-900, SC-900, COSS, PC, Points Operations, SMSTS. No Consepsys, no OCR, no BTEC.
+
+Rail role: FIRST in Experience section. Full bullet list. Primary differentiator for this track.
+
+Section order: Profile → Core Skills → Certifications → COSS/PC Role (full bullets, first) → Independent AI Projects → Other Experience (GoCollate, Quintech, Tavistock, iConcepts) → Education
 
 Keywords to inject from JD:
 digital railway, BIM, digital transformation,
@@ -199,6 +219,12 @@ De-emphasise:
 * Financial trading system details
 
 CV section header: "Independent Projects"
+
+Certifications: Consepsys (first), COSS, PC, Points Operations, SMSTS, AZ-900, SC-900. No OCR, no BTEC.
+
+Rail role: Include after Certifications. Trim to 5–6 bullets: NR3180 forms, Safe Work Packs, Sentinel verification, compliance record-keeping. Shows familiarity with frameworks doc controllers serve.
+
+Section order: Profile → Core Skills → Certifications (Consepsys first) → COSS/PC Role (compliance framing) → Independent Projects → Experience (Tavistock featured, then GoCollate, Quintech, iConcepts) → Education
 
 EDMS platform check — before applying to
 any document control role, check which

@@ -58,6 +58,24 @@ MLOps, Claude API, risk governance, pipeline architecture, production AI systems
 agent orchestration, Claude Code, agentic workflows, reinforcement learning,
 inference pipeline, Python 3.11
 
+**Certifications to include (Track A only):**
+- Microsoft Azure Fundamentals (AZ-900) — July 2023
+- Microsoft Security, Compliance & Identity Fundamentals (SC-900) — August 2023
+DO NOT include: Consepsys, COSS, PC, Points Operations, SMSTS, OCR, BTEC
+
+**Rail role handling (Track A):**
+Include ONE LINE only — no bullets, no description:
+`Controller of Site Safety / Protection Controller | Vital Rail UK (and others) | November 2018 – Present`
+Purpose: closes employment gap and shows current employment. No detail beyond this.
+
+**CV section order (Track A):**
+1. Profile (Engineering Focus)
+2. Core Skills
+3. Certifications (AZ-900 + SC-900 only)
+4. AI Systems Portfolio
+5. Experience: GoCollate → Quintech → Tavistock → iConcepts → Rail (one line, no bullets)
+6. Education
+
 ---
 
 ### Track B — Product & Leadership (Option B)
@@ -89,6 +107,24 @@ Solutions Engineer, AI Delivery Lead
 product roadmap, stakeholder management, AI product strategy, go-to-market,
 digital transformation, cross-functional, agile, OKRs, product-led growth,
 AI adoption, LLM products, enterprise AI, technical product management
+
+**Certifications to include (Track B only):**
+- Microsoft Azure Fundamentals (AZ-900) — July 2023
+- Microsoft Security, Compliance & Identity Fundamentals (SC-900) — August 2023
+DO NOT include: Consepsys, COSS, PC, Points Operations, SMSTS, OCR, BTEC
+
+**Rail role handling (Track B):**
+Include ONE LINE only — no bullets, no description:
+`Controller of Site Safety / Protection Controller | Vital Rail UK (and others) | November 2018 – Present`
+Purpose: closes employment gap and shows current employment. No detail beyond this.
+
+**CV section order (Track B):**
+1. Profile (Product & Leadership Focus)
+2. Core Skills
+3. Certifications (AZ-900 + SC-900 only)
+4. Independent AI Projects
+5. Experience: GoCollate → Quintech → Tavistock → iConcepts → Rail (one line, no bullets)
+6. Education
 
 ---
 
@@ -124,6 +160,28 @@ rail technology, AI implementation, safety systems, asset management, ERTMS,
 digital signalling, data analytics, project delivery, stakeholder engagement,
 NR standards, ISO 19650, CDM regulations, COSS, PC, SSOW, Sentinel, Rule Book,
 possession, mainline
+
+**Certifications to include (Track C — all rail + Azure):**
+- Microsoft Azure Fundamentals (AZ-900) — July 2023
+- Microsoft Security, Compliance & Identity Fundamentals (SC-900) — August 2023
+- Controller of Site Safety (COSS) — TEC Training, March 2021
+- Protection Controller (PC) — Fastline Training, July 2021
+- Points Operations — BR Rail, February 2024
+- SMSTS — Knight Learning, June 2021
+DO NOT include: Consepsys, OCR Level 2, BTEC Level 1
+
+**Rail role handling (Track C):**
+FIRST entry in Experience section. Full bullet list. This is the primary differentiator.
+Frame: Charles is an active rail professional who also builds AI systems — not the other way round.
+
+**CV section order (Track C):**
+1. Profile (Rail/Civils Digital Transformation)
+2. Core Skills
+3. Certifications (all rail + Azure, as listed above)
+4. COSS/PC Role (first in Experience, full bullet list — Morgan Sindall / MatchTech / YFL / Vital Rail)
+5. Independent AI Projects
+6. Other Experience: GoCollate → Quintech → Tavistock → iConcepts
+7. Education
 
 **Scoring note:** Score Track C generously where COSS, PC, operational rail
 experience, or Network Rail standards are mentioned. This combination of
@@ -174,6 +232,31 @@ document control, EDMS, Aconex, Asite, Procore, Viewpoint, ISO 19650,
 Golden Thread, Building Safety Act, information management, transmittals,
 version control, metadata, document numbering, distribution matrix,
 BIM Level 2, records management, data rooms, SharePoint, NR standards
+
+**Certifications to include (Track D — Consepsys first, then rail, then Azure):**
+- Consepsys Document Control Certification (MUST INCLUDE — lead cert)
+- Controller of Site Safety (COSS) — TEC Training, March 2021
+- Protection Controller (PC) — Fastline Training, July 2021
+- Points Operations — BR Rail, February 2024
+- SMSTS — Knight Learning, June 2021
+- Microsoft Azure Fundamentals (AZ-900) — July 2023
+- Microsoft Security, Compliance & Identity Fundamentals (SC-900) — August 2023
+DO NOT include: OCR Level 2, BTEC Level 1
+
+**Rail role handling (Track D):**
+Include after Certifications. Trim to 5–6 bullets focused on compliance and documentation:
+NR3180 forms, Safe Work Packs, Sentinel competency verification, structured record-keeping
+under Network Rail standards. Shows you already operate inside compliance frameworks
+that document controllers serve.
+
+**CV section order (Track D):**
+1. Profile (Document Control & Information Management)
+2. Core Skills
+3. Certifications (Consepsys first, then rail, then Azure)
+4. COSS/PC Role (compliance-framed bullets — Morgan Sindall / MatchTech / YFL / Vital Rail)
+5. Independent Projects (AI systems framed as workflow automation capability)
+6. Experience: Tavistock (featured) → GoCollate → Quintech → iConcepts
+7. Education
 
 ---
 
