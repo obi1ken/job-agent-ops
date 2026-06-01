@@ -106,11 +106,10 @@ class ApprovalStore:
         a = self._approvals.get(approval_id)
         if a is None:
             return None
-        # Idempotent: no-op if already in target state
-        if a.state == new_state.value:
-            return a
+        changed = a.state != new_state.value
         a.state = new_state.value
-        a.state_changed_utc = datetime.now(timezone.utc).isoformat()
+        if changed:
+            a.state_changed_utc = datetime.now(timezone.utc).isoformat()
         if notes:
             a.notes = notes
         if discord_message_id:
