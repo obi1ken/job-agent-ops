@@ -29,7 +29,7 @@ class QuotaManager:
         hours = window_hours or int(os.environ.get("QUOTA_WINDOW_HOURS", str(_DEFAULT_WINDOW_HOURS)))
         self._limit = window_limit or int(os.environ.get("QUOTA_WINDOW_LIMIT", str(_DEFAULT_LIMIT)))
         self._window = RollingWindow(path, window_hours=hours)
-        self._queue = PendingQueue()
+        self._queue = PendingQueue(state_dir=os.path.dirname(path))
 
     def request(
         self,

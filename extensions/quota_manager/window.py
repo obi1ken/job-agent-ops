@@ -25,6 +25,9 @@ class RollingWindow:
         self._window_hours = window_hours
         self._entries: list[UsageEntry] = []
         self._load()
+        pruned = self.prune()
+        if pruned > 0:
+            self.save()
 
     def current_usage(self) -> int:
         self.prune()
