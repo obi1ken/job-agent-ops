@@ -33,26 +33,25 @@ Key architectural decisions locked in:
 
 ## What Is In Progress
 
-**Phase 3 — Testing and Activation** (next)
+**Phase 3 — First live run** (active)
 
-ACTIVATION PREREQUISITES — system is code-complete but cannot run until:
-1. Gmail address — GMAIL_ADDRESS in .env is still placeholder
-2. Gmail API credentials — credentials.json does not exist (one-time Google Cloud Console setup)
-3. Adzuna API keys — ADZUNA_APP_ID and ADZUNA_API_KEY are placeholders in .env
-4. SerpAPI key — SERPAPI_KEY is placeholder in .env
+All 4 activation prerequisites complete as of 2026-04-27:
+- AP-1 GMAIL_ADDRESS=miclaud04@gmail.com ✓
+- AP-2 credentials.json in place, OAuth consent done ✓
+- AP-3 Adzuna keys set ✓
+- AP-4 SerpAPI key set ✓
+
+First live run: `python orchestrator.py --verbose`
 
 ---
 
 ## What Is Queued Next
 
-Phase 3 activation steps:
-1. Set GMAIL_ADDRESS in .env
-2. Google Cloud Console → enable Gmail API → create OAuth2 credentials → download credentials.json
-3. Run `python -c "from extensions.email_monitor import EmailMonitor; ..."` → authenticate() flow
-4. Obtain Adzuna API keys → add to .env
-5. Obtain SerpAPI key → add to .env
-6. First live run: `python orchestrator.py --verbose`
-7. Add first JD URL to data/pipeline.md, verify full flow end-to-end
+Phase 3 verification steps:
+1. Verify full discovery → score → tailor → cover letter → Discord approval flow
+2. Charles approves in Discord → verify submission logs to applications.md
+3. Verify GHOST detection (14d) and follow-up scheduler (7d)
+4. Verify interview countdown fires 24h before interview date
 
 ---
 
