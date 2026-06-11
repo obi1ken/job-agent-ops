@@ -17,9 +17,24 @@ class DiscoveryState:
             datetime.now(timezone.utc).isoformat()
         )
 
+    def bump_rotation(self) -> int:
+        """Return the current rotation offset and advance it for the next tick."""
+        offset = self._data["rotation"]
+        self._data["rotation"] = offset + 1
+        return offset
+
     def save(self) -> None:
         tmp = self._path.with_suffix(".json.tmp")
-        tmp.write_text(json.dumps({"version": 1, "seen": self._data["seen"]}, indent=2))
+        tmp.write_text(
+            json.dumps(
+                {
+                    "version": 1,
+                    "seen": self._data["seen"],
+                    "rotation": self._data["rotation"],
+                },
+                indent=2,
+            )
+        )
         os.replace(tmp, self._path)
 
     def prune(self, keep_days: int = 30) -> int:
@@ -39,10 +54,13 @@ class DiscoveryState:
         if self._path.exists():
             try:
                 raw = json.loads(self._path.read_text())
-                return {"seen": raw.get("seen", {})}
-            except (json.JSONDecodeError, KeyError):
+                return {
+                    "seen": raw.get("seen", {}),
+                    "rotation": int(raw.get("rotation", 0)),
+                }
+            except (json.JSONDecodeError, KeyError, ValueError):
                 pass
-        return {"seen": {}}
+        return {"seen": {}, "rotation": 0}
 
 
 def _parse_ts(ts: str) -> datetime:
