@@ -20,6 +20,14 @@ _TRACK_COLORS: dict[str, int] = {
     "A": 0x3498DB, "B": 0x2ECC71, "C": 0xE67E22, "D": 0x9B59B6,
 }
 
+# Plain-language job type names shown to Charles (internal code keeps A-D)
+_TRACK_NAMES: dict[str, str] = {
+    "A": "Engineering / AI",
+    "B": "Product & Leadership",
+    "C": "Rail & Civils",
+    "D": "Document Control",
+}
+
 
 def post_approval_request(pending: PendingApproval) -> str | None:
     """Post CV-ready approval embed to Discord.
@@ -42,9 +50,10 @@ def post_approval_request(pending: PendingApproval) -> str | None:
     if score_label:
         title = f"{score_label} | {title}"
 
+    job_type = _TRACK_NAMES.get(pending.track.upper(), pending.track)
     fields = [
         {"name": "Role", "value": pending.role, "inline": True},
-        {"name": "Track", "value": pending.track, "inline": True},
+        {"name": "Job Type", "value": job_type, "inline": True},
         {"name": "Score", "value": f"{pending.score}/5", "inline": True},
         {"name": "Portal", "value": pending.portal, "inline": True},
         {"name": "Location", "value": getattr(pending, "location", "") or "—", "inline": True},
