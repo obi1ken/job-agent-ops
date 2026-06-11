@@ -31,6 +31,7 @@ extensions/job_discovery/discovery_state.json
 extensions/quota_manager/quota_state.json
 
 # Orchestrator runtime state (generated, sensitive)
+extensions/deadline_manager/deadline_state.json
 extensions/orchestrator/pending_approvals.json
 extensions/orchestrator/ai_tasks.json
 extensions/orchestrator/discord_inbox.jsonl
