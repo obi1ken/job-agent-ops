@@ -42,12 +42,16 @@ class PendingApproval:
     defer_until_utc: Optional[str] = None
     tailoring_summary: dict = field(default_factory=dict)
     notes: str = ""
+    stage: str = "DOCS"             # "INTEREST" (job match, no docs yet) | "DOCS"
+    location: str = ""
 
     @staticmethod
     def create(
         company: str, role: str, track: str, score: float, portal: str,
         job_url: str, cv_path: str, cover_letter_path: str, jd_path: str,
         tailoring_summary: dict | None = None,
+        stage: str = "DOCS",
+        location: str = "",
     ) -> "PendingApproval":
         now = datetime.now(timezone.utc).isoformat()
         return PendingApproval(
@@ -57,6 +61,7 @@ class PendingApproval:
             cover_letter_path=cover_letter_path, jd_path=jd_path,
             created_utc=now, state=ApprovalState.AWAITING.value,
             state_changed_utc=now, tailoring_summary=tailoring_summary or {},
+            stage=stage, location=location,
         )
 
 
@@ -116,6 +121,24 @@ class ApprovalStore:
             a.discord_message_id = discord_message_id
         if defer_until_utc is not None:
             a.defer_until_utc = defer_until_utc
+        self._save()
+        return a
+
+    def attach_documents(
+        self,
+        approval_id: str,
+        cv_path: str,
+        cover_letter_path: str,
+        tailoring_summary: dict,
+    ) -> Optional[PendingApproval]:
+        """Attach generated documents and move the approval to the DOCS stage."""
+        a = self._approvals.get(approval_id)
+        if a is None:
+            return None
+        a.cv_path = cv_path
+        a.cover_letter_path = cover_letter_path
+        a.tailoring_summary = tailoring_summary
+        a.stage = "DOCS"
         self._save()
         return a
 

@@ -18,13 +18,38 @@ class SerpApiClient:
     def __init__(self):
         self._api_key = os.environ["SERPAPI_KEY"]
 
-    def fetch(self, query: str, title_filter: dict, location: str = "United Kingdom") -> list[JobListing]:
-        params = {
+    def fetch(self, query: str, title_filter: dict, location: str | None = None) -> list[JobListing]:
+        """Two passes: local (radius around base location) + UK-wide remote-only.
+
+        SERPAPI_LOCATION / SERPAPI_RADIUS_KM control the local pass.
+        The remote pass uses Google Jobs' work-from-home filter (ltype=1).
+        """
+        loc = location or os.environ.get("SERPAPI_LOCATION", "Reading, England, United Kingdom")
+        radius_km = os.environ.get("SERPAPI_RADIUS_KM", "50")
+
+        local_params = {
             "engine": "google_jobs",
             "q": query,
-            "location": location,
+            "location": loc,
+            "lrad": radius_km,
             "api_key": self._api_key,
         }
+        remote_params = {
+            "engine": "google_jobs",
+            "q": query,
+            "location": "United Kingdom",
+            "ltype": "1",
+            "api_key": self._api_key,
+        }
+
+        by_id: dict[str, JobListing] = {}
+        for listing in self._search(local_params, title_filter):
+            by_id.setdefault(listing.external_id, listing)
+        for listing in self._search(remote_params, title_filter):
+            by_id.setdefault(listing.external_id, listing)
+        return list(by_id.values())
+
+    def _search(self, params: dict, title_filter: dict) -> list[JobListing]:
         try:
             resp = requests.get(_BASE_URL, params=params, timeout=15)
             resp.raise_for_status()

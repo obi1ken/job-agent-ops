@@ -49,10 +49,10 @@ def handle_score_result(task: AITask, raw: str, ctx: "TickContext") -> None:
 
     company = task.payload.get("company", "")
     role = task.payload.get("role", "")
-    jd_text = task.payload.get("jd_text", "")
     jd_path = task.payload.get("jd_path", "")
     portal = task.payload.get("portal", "")
     job_url = task.payload.get("job_url", "")
+    location = task.payload.get("location", "")
 
     threshold = ctx.config.scoring.threshold_for(best_track)
     if score < threshold:
@@ -60,15 +60,46 @@ def handle_score_result(task: AITask, raw: str, ctx: "TickContext") -> None:
                  task.task_id[:8], score, threshold, best_track)
         return
 
+    # Two-stage approval: present the job match first. CV/cover letter are
+    # only generated after Charles approves interest (token control).
+    pending = PendingApproval.create(
+        company=company, role=role, track=best_track, score=score,
+        portal=portal, job_url=job_url,
+        cv_path="", cover_letter_path="", jd_path=jd_path,
+        tailoring_summary={"edms_platform": edms_platform},
+        stage="INTEREST", location=location,
+    )
+    ctx.approval_store.add(pending)
+    log.info("INTEREST approval created for %s (Track %s, %.1f)", company, best_track, score)
+
+    try:
+        msg_id = post_approval_request(pending)
+        if msg_id:
+            ctx.approval_store.transition(
+                pending.approval_id, ApprovalState.AWAITING,
+                discord_message_id=msg_id,
+            )
+    except Exception as exc:
+        log.error("Failed to post interest approval for %s: %s", company, exc)
+
+
+def dispatch_tailoring(pending: PendingApproval, ctx: "TickContext") -> None:
+    """Charles approved interest — generate the documents. Called from the
+    approval-action handler, never directly from scoring."""
     from extensions.quota_manager.models import OperationType
     from .ai_prompts import build_tailor_cv_prompt
     from .quota_gate import gate
 
+    jd_text = _read_jd_text(pending.jd_path)
+    edms_platform = pending.tailoring_summary.get("edms_platform")
+
     op = OperationType.CV_TAILORING_STANDARD
-    prompt, tokens = build_tailor_cv_prompt(jd_text, best_track, company, role, ctx.config)
-    allowed, _ = gate(ctx.quota, op, tokens, f"tailor:{company[:20]}", {})
+    prompt, tokens = build_tailor_cv_prompt(
+        jd_text, pending.track, pending.company, pending.role, ctx.config
+    )
+    allowed, _ = gate(ctx.quota, op, tokens, f"tailor:{pending.company[:20]}", {})
     if not allowed:
-        log.info("TAILOR_CV deferred for %s — quota", company)
+        log.info("TAILOR_CV deferred for %s — quota", pending.company)
         return
 
     tailor_task = ctx.ai_queue.enqueue(
@@ -76,15 +107,25 @@ def handle_score_result(task: AITask, raw: str, ctx: "TickContext") -> None:
         operation_type_name=op.name,
         estimated_tokens=tokens,
         payload={
-            "company": company, "role": role, "track": best_track,
-            "score": score, "portal": portal, "job_url": job_url,
-            "jd_text": jd_text, "jd_path": jd_path, "edms_platform": edms_platform,
+            "company": pending.company, "role": pending.role, "track": pending.track,
+            "score": pending.score, "portal": pending.portal, "job_url": pending.job_url,
+            "jd_text": jd_text, "jd_path": pending.jd_path,
+            "edms_platform": edms_platform,
+            "approval_id": pending.approval_id,
         },
         prompt_text=prompt,
+        related_approval_id=pending.approval_id,
     )
     ctx.quota.record_usage(tokens, op)
     log.info("TAILOR_CV task %s enqueued for %s (Track %s, %.1f)",
-             tailor_task.task_id[:8], company, best_track, score)
+             tailor_task.task_id[:8], pending.company, pending.track, pending.score)
+
+
+def _read_jd_text(jd_path: str) -> str:
+    try:
+        return Path(jd_path).read_text(encoding="utf-8")
+    except OSError:
+        return ""
 
 
 def handle_tailor_cv_result(task: AITask, raw: str, ctx: "TickContext") -> None:
@@ -154,8 +195,10 @@ def handle_tailor_cv_result(task: AITask, raw: str, ctx: "TickContext") -> None:
             "score": score, "portal": portal, "job_url": job_url,
             "jd_text": jd_text, "jd_path": jd_path,
             "cv_path": str(cv_path), "tailoring_summary": tailoring_summary,
+            "approval_id": payload.get("approval_id", ""),
         },
         prompt_text=prompt,
+        related_approval_id=payload.get("approval_id") or None,
     )
     ctx.quota.record_usage(tokens, op)
 
@@ -176,16 +219,26 @@ def handle_cover_letter_result(task: AITask, raw: str, ctx: "TickContext") -> No
     cl_text = raw.split("<<<RESULT_JSON>>>")[0].strip()
     cl_path.write_text(cl_text, encoding="utf-8")
 
-    pending = PendingApproval.create(
-        company=company, role=role, track=track, score=score,
-        portal=payload.get("portal", ""),
-        job_url=payload.get("job_url", ""),
-        cv_path=cv_path,
-        cover_letter_path=str(cl_path),
-        jd_path=payload.get("jd_path", ""),
-        tailoring_summary=tailoring_summary,
-    )
-    ctx.approval_store.add(pending)
+    approval_id = payload.get("approval_id", "")
+    pending = None
+    if approval_id:
+        # Two-stage flow: attach docs to the interest approval Charles already said yes to
+        pending = ctx.approval_store.attach_documents(
+            approval_id, cv_path, str(cl_path), tailoring_summary
+        )
+
+    if pending is None:
+        # Legacy path: no prior interest approval — create one at the DOCS stage
+        pending = PendingApproval.create(
+            company=company, role=role, track=track, score=score,
+            portal=payload.get("portal", ""),
+            job_url=payload.get("job_url", ""),
+            cv_path=cv_path,
+            cover_letter_path=str(cl_path),
+            jd_path=payload.get("jd_path", ""),
+            tailoring_summary=tailoring_summary,
+        )
+        ctx.approval_store.add(pending)
 
     try:
         msg_id = post_approval_request(pending)
