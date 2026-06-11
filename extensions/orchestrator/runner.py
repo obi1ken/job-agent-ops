@@ -279,9 +279,20 @@ class Orchestrator:
         eligible = ctx.quota.flush_queue()
         for op in eligible:
             decision = ctx.quota.request(op.operation_type, op.estimated_tokens, op.label)
-            if decision.allowed:
-                ctx.quota.confirm_dequeued(op)
-                log.info("Quota queue: released deferred op %s", op.label)
+            if not decision.allowed:
+                continue
+            ctx.quota.confirm_dequeued(op)
+            listing_data = op.payload.get("listing")
+            if listing_data and op.operation_type.name.startswith("JD_SCORING"):
+                # Rebuild the score task that was deferred — without this the
+                # listing is marked seen but never scored (silently lost).
+                try:
+                    self._queue_score_job(JobListing(**listing_data), ctx)
+                    log.info("Quota queue: re-dispatched deferred score %s", op.label)
+                except (TypeError, KeyError) as exc:
+                    log.error("Quota queue: failed to rebuild %s: %s", op.label, exc)
+            else:
+                log.info("Quota queue: released deferred op %s (no rebuild payload)", op.label)
         ctx.quota.drain_stale_queue()
 
     # ── Helpers ──────────────────────────────────────────────────────────────
@@ -298,7 +309,24 @@ class Orchestrator:
         )
         allowed, _ = gate(
             ctx.quota, op, tokens, f"score:{listing.company[:20]}",
-            {"listing_id": listing.external_id},
+            {
+                "listing_id": listing.external_id,
+                # Full listing snapshot so a quota-deferred score can be
+                # rebuilt by the flush phase (raw omitted to keep state small)
+                "listing": {
+                    "source": listing.source,
+                    "external_id": listing.external_id,
+                    "title": listing.title,
+                    "company": listing.company,
+                    "location": listing.location,
+                    "description": listing.description,
+                    "url": listing.url,
+                    "salary_min": listing.salary_min,
+                    "salary_max": listing.salary_max,
+                    "posted_date": listing.posted_date,
+                    "seniority_boost": listing.seniority_boost,
+                },
+            },
         )
         if not allowed:
             return
