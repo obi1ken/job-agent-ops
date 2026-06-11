@@ -17,6 +17,13 @@ class JobDiscoveryError(Exception):
     pass
 
 
+def _rotate(queries: list[dict], offset: int) -> list[dict]:
+    if not queries:
+        return queries
+    k = offset % len(queries)
+    return queries[k:] + queries[:k]
+
+
 class JobDiscovery:
     def __init__(self, portals_yml_path: str, state_path: str = _DEFAULT_STATE_PATH):
         try:
@@ -33,9 +40,12 @@ class JobDiscovery:
         max_new = int(
             os.environ.get("MAX_NEW_JOBS_PER_TICK", _DEFAULT_MAX_NEW_PER_TICK)
         )
+        # Rotate the starting query each tick so the per-tick cap doesn't
+        # starve later tracks (queries are ordered Track A→D in portals.yml).
+        offset = self._state.bump_rotation()
 
         # Adzuna
-        adzuna_queries = get_enabled_queries(self._config, "adzuna")
+        adzuna_queries = _rotate(get_enabled_queries(self._config, "adzuna"), offset)
         if adzuna_queries and len(all_listings) < max_new:
             try:
                 client = AdzunaClient()
@@ -48,7 +58,7 @@ class JobDiscovery:
                 log.error("Adzuna source failed: %s", exc)
 
         # SerpAPI
-        serpapi_queries = get_enabled_queries(self._config, "serpapi")
+        serpapi_queries = _rotate(get_enabled_queries(self._config, "serpapi"), offset)
         if serpapi_queries and len(all_listings) < max_new:
             try:
                 client = SerpApiClient()
