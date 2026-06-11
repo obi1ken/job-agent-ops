@@ -17,6 +17,7 @@ from extensions.quota_manager.models import OperationType
 from .ai_task_queue import AITask, AITaskKind
 from .approval_dispatcher import post_approval_request
 from .approval_store import PendingApproval, ApprovalState
+from .review_queue import QUEUED, PRESENTED, ReviewEntry
 
 if TYPE_CHECKING:
     from .runner import TickContext
@@ -60,18 +61,40 @@ def handle_score_result(task: AITask, raw: str, ctx: "TickContext") -> None:
                  task.task_id[:8], score, threshold, best_track)
         return
 
-    # Two-stage approval: present the job match first. CV/cover letter are
-    # only generated after Charles approves interest (token control).
-    pending = PendingApproval.create(
+    # Serial review: scored jobs wait in the review queue and are presented
+    # to Charles ONE at a time (highest score first). CV/cover letter are
+    # only generated after he approves interest.
+    entry = ReviewEntry(
+        entry_id=task.payload.get("external_id", "") or task.task_id,
         company=company, role=role, track=best_track, score=score,
-        portal=portal, job_url=job_url,
-        cv_path="", cover_letter_path="", jd_path=jd_path,
-        tailoring_summary={"edms_platform": edms_platform},
-        stage="INTEREST", location=location,
+        portal=portal, job_url=job_url, jd_path=jd_path,
+        location=location, edms_platform=edms_platform,
+    )
+    if ctx.review_queue.add(entry):
+        log.info("Review queue: added %s (Track %s, %.1f)", company, best_track, score)
+
+
+def present_next_job(ctx: "TickContext") -> None:
+    """Post the next queued Job Match if nothing is awaiting Charles and no
+    documents are in flight. Strictly one active job at a time."""
+    if ctx.approval_store.list_awaiting():
+        return
+    in_flight = {AITaskKind.TAILOR_CV.value, AITaskKind.COVER_LETTER.value}
+    if any(t.kind in in_flight for t in ctx.ai_queue.list_awaiting()):
+        return
+
+    entry = ctx.review_queue.next_queued()
+    if entry is None:
+        return
+
+    pending = PendingApproval.create(
+        company=entry.company, role=entry.role, track=entry.track,
+        score=entry.score, portal=entry.portal, job_url=entry.job_url,
+        cv_path="", cover_letter_path="", jd_path=entry.jd_path,
+        tailoring_summary={"edms_platform": entry.edms_platform},
+        stage="INTEREST", location=entry.location,
     )
     ctx.approval_store.add(pending)
-    log.info("INTEREST approval created for %s (Track %s, %.1f)", company, best_track, score)
-
     try:
         msg_id = post_approval_request(pending)
         if msg_id:
@@ -80,7 +103,11 @@ def handle_score_result(task: AITask, raw: str, ctx: "TickContext") -> None:
                 discord_message_id=msg_id,
             )
     except Exception as exc:
-        log.error("Failed to post interest approval for %s: %s", company, exc)
+        log.error("Failed to post interest approval for %s: %s", entry.company, exc)
+    ctx.review_queue.mark(entry.entry_id, PRESENTED, approval_id=pending.approval_id)
+    log.info("Presented job match: %s (Track %s, %.1f) — %d still queued",
+             entry.company, entry.track, entry.score,
+             ctx.review_queue.counts().get(QUEUED, 0))
 
 
 def dispatch_tailoring(pending: PendingApproval, ctx: "TickContext") -> None:
