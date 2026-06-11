@@ -129,7 +129,9 @@ def build_score_prompt(
 ) -> tuple[str, int]:
     jd_truncated = jd_text[:8_000]
     prompt = _SCORE_TEMPLATE.format(jd_text=jd_truncated)
-    token_estimate = 2_000 + len(prompt) // 4
+    # Buffer calibrated against the 2026-06-11 live run: real score cost is
+    # ~0.6k in+out; 2k buffers made 5 scores jam the 22k window for no reason.
+    token_estimate = 500 + len(prompt) // 4
     return prompt, token_estimate
 
 

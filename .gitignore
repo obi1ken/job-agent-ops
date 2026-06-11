@@ -29,6 +29,8 @@ extensions/email_monitor/token.json
 extensions/email_monitor/poll_state.json
 extensions/job_discovery/discovery_state.json
 extensions/quota_manager/quota_state.json
+extensions/quota_manager/pending_queue.json
+extensions/orchestrator/review_queue.json
 
 # Orchestrator runtime state (generated, sensitive)
 extensions/deadline_manager/deadline_state.json

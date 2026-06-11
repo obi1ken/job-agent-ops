@@ -27,6 +27,10 @@ from .approval_store import ApprovalState, ApprovalStore
 from .config import ProfileConfig, load_profile
 from .discord_inbox import DiscordInbox
 from .quota_gate import emit_zone_alert_if_changed, gate
+from .review_queue import APPROVED as RQ_APPROVED
+from .review_queue import EXPIRED as RQ_EXPIRED
+from .review_queue import REJECTED as RQ_REJECTED
+from .review_queue import ReviewQueue
 from .submission import submit_approved
 
 log = logging.getLogger(__name__)
@@ -57,6 +61,7 @@ class TickContext:
     ai_queue: AITaskQueue
     approval_store: ApprovalStore
     discord_inbox: DiscordInbox
+    review_queue: "ReviewQueue"
     now_utc: datetime
     report: TickReport
 
@@ -87,6 +92,7 @@ class Orchestrator:
             ai_queue=AITaskQueue(cfg.ai_outbox_dir, cfg.ai_inbox_dir, cfg.orchestrator_dir),
             approval_store=ApprovalStore(cfg.orchestrator_dir),
             discord_inbox=DiscordInbox(cfg.orchestrator_dir),
+            review_queue=ReviewQueue(cfg.orchestrator_dir),
             now_utc=now_utc,
             report=report,
         )
@@ -96,6 +102,7 @@ class Orchestrator:
             ("deadline_tick", self._phase_deadline_tick),
             ("consume_ai_results", self._phase_consume_ai_results),
             ("process_approvals", self._phase_process_approvals),
+            ("present_next", self._phase_present_next),
             ("job_discovery", self._phase_job_discovery),
             ("dispatch_ai_tasks", self._phase_dispatch_ai_tasks),
             ("flush_quota_queue", self._phase_flush_quota_queue),
@@ -176,6 +183,8 @@ class Orchestrator:
         # Expire stale AWAITING approvals
         expired = ctx.approval_store.expire_stale(ctx.now_utc)
         ctx.report.expired_approvals = len(expired)
+        for aid in expired:
+            ctx.review_queue.mark_by_approval(aid, RQ_EXPIRED)
 
         # Re-present DEFERRED approvals that are now due
         for pending in ctx.approval_store.list_due_for_retry(ctx.now_utc):
@@ -238,11 +247,13 @@ class Orchestrator:
             ctx.approval_store.transition(pending.approval_id, ApprovalState.APPROVED)
             submit_approved(pending, ctx.config)
             ctx.approval_store.transition(pending.approval_id, ApprovalState.SUBMITTED)
+            ctx.review_queue.mark_by_approval(pending.approval_id, RQ_APPROVED)
             ctx.report.submissions += 1
             log.info("SUBMITTED: %s — %s (Track %s)", pending.company, pending.role, pending.track)
 
         elif action == "reject":
             ctx.approval_store.transition(pending.approval_id, ApprovalState.REJECTED, notes=text)
+            ctx.review_queue.mark_by_approval(pending.approval_id, RQ_REJECTED)
             log.info("REJECTED: %s — %s", pending.company, pending.role)
 
         elif action == "defer":
@@ -256,6 +267,9 @@ class Orchestrator:
 
         else:
             log.debug("Unknown approval action '%s' for %s", action, pending.approval_id[:8])
+
+    def _phase_present_next(self, ctx: TickContext) -> None:
+        result_handlers.present_next_job(ctx)
 
     def _phase_job_discovery(self, ctx: TickContext) -> None:
         portals_yml = ctx.config.portals_yml_path
@@ -342,6 +356,7 @@ class Orchestrator:
                 "jd_path": jd_path, "portal": listing.source,
                 "job_url": listing.url,
                 "location": getattr(listing, "location", ""),
+                "external_id": listing.external_id,
             },
             prompt_text=prompt,
         )
