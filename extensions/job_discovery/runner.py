@@ -24,6 +24,15 @@ def _rotate(queries: list[dict], offset: int) -> list[dict]:
     return queries[k:] + queries[:k]
 
 
+def _filter_job_type(queries: list[dict], job_type: str) -> list[dict]:
+    """Keep only queries for one job type (matched by 'Track X' in the query
+    name). Empty job_type = no filtering."""
+    if not job_type:
+        return queries
+    needle = f"track {job_type.lower()}"
+    return [q for q in queries if needle in q.get("name", "").lower()]
+
+
 class JobDiscovery:
     def __init__(self, portals_yml_path: str, state_path: str = _DEFAULT_STATE_PATH):
         try:
@@ -44,8 +53,15 @@ class JobDiscovery:
         # starve later tracks (queries are ordered Track A→D in portals.yml).
         offset = self._state.bump_rotation()
 
+        # Targeted search: DISCOVERY_JOB_TYPE=A|B|C|D limits this fetch to one
+        # job type's queries (Charles: "search document control" → D).
+        job_type = os.environ.get("DISCOVERY_JOB_TYPE", "").strip().upper()
+
         # Adzuna
-        adzuna_queries = _rotate(get_enabled_queries(self._config, "adzuna"), offset)
+        adzuna_queries = _rotate(
+            _filter_job_type(get_enabled_queries(self._config, "adzuna"), job_type),
+            offset,
+        )
         if adzuna_queries and len(all_listings) < max_new:
             try:
                 client = AdzunaClient()
@@ -58,7 +74,10 @@ class JobDiscovery:
                 log.error("Adzuna source failed: %s", exc)
 
         # SerpAPI
-        serpapi_queries = _rotate(get_enabled_queries(self._config, "serpapi"), offset)
+        serpapi_queries = _rotate(
+            _filter_job_type(get_enabled_queries(self._config, "serpapi"), job_type),
+            offset,
+        )
         if serpapi_queries and len(all_listings) < max_new:
             try:
                 client = SerpApiClient()
