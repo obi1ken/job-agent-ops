@@ -228,6 +228,13 @@ class Orchestrator:
         self, pending, action: str, text: str, ctx: TickContext
     ) -> None:
         if action == "approve":
+            if getattr(pending, "stage", "DOCS") == "INTEREST":
+                # Stage 1 approved: Charles is interested — generate documents now.
+                ctx.approval_store.transition(pending.approval_id, ApprovalState.APPROVED)
+                result_handlers.dispatch_tailoring(pending, ctx)
+                log.info("INTERESTED: %s — %s (Track %s) — generating documents",
+                         pending.company, pending.role, pending.track)
+                return
             ctx.approval_store.transition(pending.approval_id, ApprovalState.APPROVED)
             submit_approved(pending, ctx.config)
             ctx.approval_store.transition(pending.approval_id, ApprovalState.SUBMITTED)
@@ -306,6 +313,7 @@ class Orchestrator:
                 "jd_text": listing.description or listing.title,
                 "jd_path": jd_path, "portal": listing.source,
                 "job_url": listing.url,
+                "location": getattr(listing, "location", ""),
             },
             prompt_text=prompt,
         )

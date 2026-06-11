@@ -37,26 +37,32 @@ def post_approval_request(pending: PendingApproval) -> str | None:
     urgent = pending.score >= float(os.environ.get("URGENT_SCORE_FLAG", "4.5"))
 
     score_label = "⚡ URGENT" if pending.score >= 4.5 else ("★ PRIORITY" if pending.score >= 4.0 else "")
-    title = f"CV Ready — {pending.company}"
+    interest_stage = getattr(pending, "stage", "DOCS") == "INTEREST"
+    title = f"Job Match — {pending.company}" if interest_stage else f"CV Ready — {pending.company}"
     if score_label:
         title = f"{score_label} | {title}"
 
-    injected = ", ".join(pending.tailoring_summary.get("keywords_injected", [])[:5]) or "—"
-    removed = ", ".join(pending.tailoring_summary.get("keywords_removed", [])[:3]) or "—"
-
-    embed = {
-        "title": title,
-        "color": color,
-        "fields": [
-            {"name": "Role", "value": pending.role, "inline": True},
-            {"name": "Track", "value": pending.track, "inline": True},
-            {"name": "Score", "value": f"{pending.score}/5", "inline": True},
-            {"name": "Portal", "value": pending.portal, "inline": True},
+    fields = [
+        {"name": "Role", "value": pending.role, "inline": True},
+        {"name": "Track", "value": pending.track, "inline": True},
+        {"name": "Score", "value": f"{pending.score}/5", "inline": True},
+        {"name": "Portal", "value": pending.portal, "inline": True},
+        {"name": "Location", "value": getattr(pending, "location", "") or "—", "inline": True},
+    ]
+    if not interest_stage:
+        injected = ", ".join(pending.tailoring_summary.get("keywords_injected", [])[:5]) or "—"
+        removed = ", ".join(pending.tailoring_summary.get("keywords_removed", [])[:3]) or "—"
+        fields += [
             {"name": "Keywords In", "value": injected, "inline": False},
             {"name": "Keywords Dropped", "value": removed, "inline": False},
             {"name": "CV", "value": pending.cv_path, "inline": False},
             {"name": "Cover Letter", "value": pending.cover_letter_path, "inline": False},
-        ],
+        ]
+
+    embed = {
+        "title": title,
+        "color": color,
+        "fields": fields,
         "footer": {"text": f"approval_id:{pending.approval_id}"},
         "timestamp": pending.created_utc,
     }
@@ -73,12 +79,18 @@ def post_approval_request(pending: PendingApproval) -> str | None:
     resp.raise_for_status()
 
     # Second message: action prompt
-    action_payload = {
-        "content": (
+    if interest_stage:
+        action_text = (
+            f"Interested? Reply **approve** to generate the CV + cover letter, "
+            f"or **reject** / **defer N days** for `{pending.approval_id[:8]}`\n"
+            f"Job URL: {pending.job_url or '—'}"
+        )
+    else:
+        action_text = (
             f"Reply **approve** / **reject** / **defer N days** for `{pending.approval_id[:8]}`\n"
             f"Job URL: {pending.job_url or '—'}"
-        ),
-    }
+        )
+    action_payload = {"content": action_text}
     resp2 = requests.post(
         f"{_API}/channels/{channel_id}/messages",
         headers=headers, json=action_payload, timeout=10,
