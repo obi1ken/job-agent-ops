@@ -62,7 +62,7 @@ class AdzunaClient:
             title=title,
             company=item.get("company", {}).get("display_name", ""),
             location=item.get("location", {}).get("display_name", ""),
-            description=item.get("description", "")[:500],
+            description=item.get("description", "")[:8000],
             url=item.get("redirect_url", ""),
             salary_min=_to_int(item.get("salary_min")),
             salary_max=_to_int(item.get("salary_max")),

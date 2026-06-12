@@ -81,7 +81,9 @@ class SerpApiClient:
             title=title,
             company=item.get("company_name", ""),
             location=item.get("location", ""),
-            description=item.get("description", "")[:500],
+            # 500-char cap caused documents tailored without real requirements
+            # (2026-06-12 Guildford incident) — keep the full advert text
+            description=item.get("description", "")[:8000],
             url=url,
             salary_min=None,
             salary_max=None,

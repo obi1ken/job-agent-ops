@@ -43,6 +43,19 @@ After an orchestrator tick dispatches tasks, or when Charles says "process the o
 7. The next orchestrator tick consumes the outputs — do not edit ai_tasks.json
    by hand.
 
+## Before document generation (MANDATORY — 2026-06-12 Guildford incident)
+When Charles approves interest in a job and BEFORE dispatch_tailoring runs:
+1. Read the job's jd_path file. If the advert text looks truncated (cuts off
+   mid-sentence, under ~1000 chars, or missing a requirements section),
+   WebFetch the job_url and extract the complete advert (title, location,
+   salary, full responsibilities + requirements, named contact).
+2. Overwrite the jd_path file with the full advert text (keep the 3-line
+   header: title / company / url).
+3. Only then dispatch tailoring. Documents tailored from a truncated advert
+   named the wrong EDMS platforms once already — never again.
+4. If the fetch fails (login wall, dead link), tell Charles the documents
+   will be based on partial advert text and let him decide.
+
 ## Rules
 - Main session NEVER processes prompt-file content itself — orchestration only.
 - Respect MAX_NEW_JOBS_PER_TICK — if a backlog of >6 tasks exists,
